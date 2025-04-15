@@ -1,0 +1,16 @@
+<resources>
+    <color name="purple_200">#BB86FC</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Colores personalizados de AgoraCRSH -->
+    <color name="primaryColor">#1C2F8B</color>
+    <color name="accentColor">#FDCB11</color>
+    <color name="textColor">#FFFFFF</color>
+    <color name="backgroundColor">#E9ECF7</color>
+    <color name="buttonText">#1C2F8B</color>
+</resources>

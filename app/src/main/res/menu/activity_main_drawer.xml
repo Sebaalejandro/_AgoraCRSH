@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_sala"
+        android:title="Reservar Sala de Enlace" />
+    <item
+        android:id="@+id/nav_proyector"
+        android:title="Reservar Proyector" />
+    <item
+        android:id="@+id/nav_mis_reservas"
+        android:title="Mis Reservas" />
+</menu>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Panel de Reservas"
+            android:textColor="@color/primaryColor"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp" />
+
+        <Button
+            android:id="@+id/btnReservarSala"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reservar Sala de Enlace"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/primaryColor"
+            android:textColor="@color/textColor" />
+
+        <Button
+            android:id="@+id/btnReservarProyector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reservar Proyector"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/primaryColor"
+            android:textColor="@color/textColor" />
+
+        <Button
+            android:id="@+id/btnEditarReserva"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Editar Reserva"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/primaryColor"
+            android:textColor="@color/textColor" />
+
+        <Button
+            android:id="@+id/btnCancelarReserva"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancelar Reserva"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/primaryColor"
+            android:textColor="@color/textColor" />
+
+        <Button
+            android:id="@+id/btnVerReservas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ver Mis Reservas"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/primaryColor"
+            android:textColor="@color/textColor" />
+
+        <Button
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cerrar Sesión"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</ScrollView>

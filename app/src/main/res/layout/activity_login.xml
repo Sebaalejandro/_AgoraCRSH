@@ -1,0 +1,69 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@color/primaryColor"
+    tools:context=".LoginActivity">
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="242dp"
+        android:layout_marginBottom="32dp"
+        android:contentDescription="Logo del Colegio"
+        android:src="@drawable/logo" />
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:hint="Correo electrónico"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:padding="12dp"
+        android:backgroundTint="@color/accentColor"
+        android:textColorHint="@color/textColor"
+        android:textColor="@color/textColor" />
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:hint="Contraseña"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/accentColor"
+        android:textColorHint="@color/textColor"
+        android:textColor="@color/textColor" />
+
+    <Button
+        android:id="@+id/loginButton"
+        android:text="Iniciar Sesión"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/accentColor"
+        android:textColor="@color/primaryColor"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/goToRegisterTextView"
+        android:text="¿No tienes cuenta? Regístrate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/textColor"
+        android:textStyle="italic" />
+    <TextView
+        android:id="@+id/forgotPasswordTextView"
+        android:text="¿Olvidaste tu contraseña?"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textColor"
+        android:layout_marginTop="16dp"/>
+
+
+</LinearLayout>
