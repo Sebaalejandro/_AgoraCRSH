@@ -17,7 +17,7 @@ public class ProfesorActivity extends AppCompatActivity {
         setTitle("Bienvenido");
 
         TextView profText = findViewById(R.id.profesorWelcomeText);
-        profText.setText("Bienvenido Profesor");
+        profText.setText("Bienvenido ");
 
         // Espera 3 segundos y cambia a MainActivity
         new Handler().postDelayed(() -> {

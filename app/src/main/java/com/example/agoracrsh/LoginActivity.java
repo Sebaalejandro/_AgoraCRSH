@@ -38,7 +38,24 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
         goToRegisterTextView = findViewById(R.id.goToRegisterTextView);
-        forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView); // nueva vista
+        forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
+
+        // Chequear si ya hay sesión activa
+        if (mAuth.getCurrentUser() != null) {
+            String uid = mAuth.getCurrentUser().getUid();
+            firestore.collection("usuarios")
+                    .document(uid)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        String rol = documentSnapshot.getString("rol");
+                        if ("admin".equals(rol)) {
+                            startActivity(new Intent(this, AdminActivity.class));
+                        } else {
+                            startActivity(new Intent(this, ProfesorActivity.class));
+                        }
+                        finish();
+                    });
+        }
 
         loginButton.setOnClickListener(v -> loginUser());
 
@@ -47,7 +64,6 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Recuperación de contraseña
         forgotPasswordTextView.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             if (TextUtils.isEmpty(email)) {
@@ -82,7 +98,10 @@ public class LoginActivity extends AppCompatActivity {
                                     String rol = documentSnapshot.getString("rol");
                                     if ("admin".equals(rol)) {
                                         startActivity(new Intent(LoginActivity.this, AdminActivity.class));
-                                    } else if ("profesor".equals(rol)) {
+                                    } else if ("profesor".equals(rol)
+                                            || "para docentes".equals(rol)
+                                            || "director".equals(rol)
+                                            || "inspector".equals(rol)) {
                                         startActivity(new Intent(LoginActivity.this, ProfesorActivity.class));
                                     } else {
                                         Toast.makeText(this, "Rol no válido", Toast.LENGTH_SHORT).show();

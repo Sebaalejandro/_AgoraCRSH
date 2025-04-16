@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    android:padding="8dp">
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TableLayout
+            android:id="@+id/tablaHorario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:shrinkColumns="*"
+            android:padding="8dp">
+
+            <!-- Fila de encabezados -->
+            <TableRow android:background="#FFA726" android:padding="8dp">
+                <TextView android:text="Hora" android:textStyle="bold" android:textColor="#FFFFFF" />
+                <TextView android:text="Lun\nS1" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+                <TextView android:text="Lun\nS2" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+                <TextView android:text="Mar\nS1" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+                <TextView android:text="Mar\nS2" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+                <TextView android:text="Mié\nS1" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+                <TextView android:text="Mié\nS2" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+                <TextView android:text="Jue\nS1" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+                <TextView android:text="Jue\nS2" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+                <TextView android:text="Vie\nS1" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+                <TextView android:text="Vie\nS2" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+            </TableRow>
+
+            <!-- Aquí se agregarán dinámicamente las filas de horario desde Java -->
+        </TableLayout>
+    </ScrollView>
+</HorizontalScrollView>

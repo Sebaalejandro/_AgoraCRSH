@@ -13,53 +13,53 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Panel de Reservas"
+            android:text="Panel de Administración"
             android:textColor="@color/textColor"
             android:textSize="26sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp" />
 
         <Button
-            android:id="@+id/btnReservarSala"
+            android:id="@+id/btnSolicitudesSala"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Reservar Sala de Enlace"
+            android:text="Solicitudes de Sala"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/accentColor"
             android:textColor="@color/primaryColor" />
 
         <Button
-            android:id="@+id/btnReservarProyector"
+            android:id="@+id/btnSolicitudesData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Reservar Proyector"
+            android:text="Solicitudes de Datas"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/accentColor"
             android:textColor="@color/primaryColor" />
 
         <Button
-            android:id="@+id/btnEditarReserva"
+            android:id="@+id/btnPendientes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Editar Reserva"
+            android:text="Reservas Pendientes"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/accentColor"
             android:textColor="@color/primaryColor" />
 
         <Button
-            android:id="@+id/btnCancelarReserva"
+            android:id="@+id/btnInventario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cancelar Reserva"
+            android:text="Crear o Editar Inventario"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/accentColor"
             android:textColor="@color/primaryColor" />
 
         <Button
-            android:id="@+id/btnVerReservas"
+            android:id="@+id/btnCalendario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ver Mis Reservas"
+            android:text="Ver Calendario"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/accentColor"
             android:textColor="@color/primaryColor" />

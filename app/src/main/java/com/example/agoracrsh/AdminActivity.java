@@ -1,7 +1,10 @@
 package com.example.agoracrsh;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AdminActivity extends AppCompatActivity {
@@ -11,9 +14,14 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
-        setTitle("Panel Administrador");
+        setTitle("Bienvenido");
 
-        TextView adminText = findViewById(R.id.adminWelcomeText);
-        adminText.setText("Bienvenido Administrador");
+        TextView bienvenidaText = findViewById(R.id.bienvenidaAdminText);
+        bienvenidaText.setText("Bienvenido Administrador");
+
+        new Handler().postDelayed(() -> {
+            startActivity(new Intent(AdminActivity.this, AdminMenuActivity.class));
+            finish();
+        }, 3000); // 3 segundos
     }
 }

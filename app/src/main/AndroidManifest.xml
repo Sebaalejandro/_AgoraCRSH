@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AgoraCRSH">
 
-        <!-- Pantalla inicial -->
+        <!-- Pantalla de inicio -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -20,12 +20,30 @@
             </intent-filter>
         </activity>
 
-        <!-- Actividades de la app -->
+        <!-- Registro -->
         <activity android:name=".RegisterActivity" android:exported="true" />
+
+        <!-- Vista bienvenida del administrador -->
         <activity android:name=".AdminActivity" android:exported="true" />
+
+        <!-- Menú principal del administrador -->
+        <activity android:name=".AdminMenuActivity" android:exported="true" />
+
+        <!-- Pantalla principal para profesor (redireccionada desde roles comunes) -->
         <activity android:name=".ProfesorActivity" android:exported="true" />
+
+        <!-- Menú de profesor -->
         <activity android:name=".MainActivity" android:exported="true" />
 
-    </application>
+        <!-- Reserva de salas -->
+        <activity android:name=".SalaReservaActivity" android:exported="true" />
 
+        <!-- Aquí puedes agregar más actividades nuevas si las vas creando -->
+        <!--
+        <activity android:name=".VerSolicitudesSalaActivity" android:exported="true" />
+        <activity android:name=".InventarioActivity" android:exported="true" />
+        <activity android:name=".CalendarioActivity" android:exported="true" />
+        -->
+
+    </application>
 </manifest>

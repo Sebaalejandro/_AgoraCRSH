@@ -14,61 +14,63 @@
         android:contentDescription="icono register"
         android:src="@drawable/register" />
 
-        <EditText
-            android:id="@+id/nameEditText"
-            android:hint="Nombre completo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:backgroundTint="@color/accentColor"
-            android:textColorHint="@color/textColor"
-            android:textColor="@color/textColor"
-            android:layout_marginBottom="12dp" />
+    <EditText
+        android:id="@+id/nameEditText"
+        android:hint="Nombre completo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:backgroundTint="@color/accentColor"
+        android:textColorHint="@color/textColor"
+        android:textColor="@color/textColor"
+        android:layout_marginBottom="12dp" />
 
-        <EditText
-            android:id="@+id/emailEditText"
-            android:hint="Correo electrónico"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:backgroundTint="@color/accentColor"
-            android:textColorHint="@color/textColor"
-            android:textColor="@color/textColor" />
+    <EditText
+        android:id="@+id/emailEditText"
+        android:hint="Correo electrónico"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:backgroundTint="@color/accentColor"
+        android:textColorHint="@color/textColor"
+        android:textColor="@color/textColor" />
 
-        <EditText
-            android:id="@+id/passwordEditText"
-            android:hint="Contraseña"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="@color/accentColor"
-            android:textColorHint="@color/textColor"
-            android:textColor="@color/textColor" />
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:hint="Contraseña"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/accentColor"
+        android:textColorHint="@color/textColor"
+        android:textColor="@color/textColor" />
 
-        <Spinner
-            android:id="@+id/roleSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:entries="@array/roles_array"
-            android:backgroundTint="@color/accentColor"
-            android:textAlignment="center" />
+    <Spinner
+        android:id="@+id/roleSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:entries="@array/roles_array"
+        android:backgroundTint="@color/accentColor"
+        android:popupBackground="@android:color/white"
+        android:theme="@style/Theme.MaterialComponents.Light" />
 
-        <Button
-            android:id="@+id/registerButton"
-            android:text="Registrarse"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="@color/accentColor"
-            android:textColor="@color/primaryColor" />
+    <Button
+        android:id="@+id/registerButton"
+        android:text="Registrarse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/accentColor"
+        android:textColor="@color/primaryColor"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/goToLoginTextView"
-            android:text="¿Ya tienes cuenta? Inicia sesión"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/textColor" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/goToLoginTextView"
+        android:text="¿Ya tienes cuenta? Inicia sesión"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/textColor" />
+</LinearLayout>
