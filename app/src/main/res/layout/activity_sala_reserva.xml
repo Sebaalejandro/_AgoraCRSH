@@ -1,38 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="#FFFFFF">
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TableLayout
-            android:id="@+id/tablaHorario"
+        <!-- Título -->
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:stretchColumns="*"
-            android:shrinkColumns="*"
-            android:padding="8dp">
+            android:text="Horario de Reservas de Sala 1"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#188F97"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp" />
 
-            <!-- Fila de encabezados -->
-            <TableRow android:background="#FFA726" android:padding="8dp">
-                <TextView android:text="Hora" android:textStyle="bold" android:textColor="#FFFFFF" />
-                <TextView android:text="Lun\nS1" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
-                <TextView android:text="Lun\nS2" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
-                <TextView android:text="Mar\nS1" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
-                <TextView android:text="Mar\nS2" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
-                <TextView android:text="Mié\nS1" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
-                <TextView android:text="Mié\nS2" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
-                <TextView android:text="Jue\nS1" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
-                <TextView android:text="Jue\nS2" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
-                <TextView android:text="Vie\nS1" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
-                <TextView android:text="Vie\nS2" android:textStyle="bold" android:gravity="center" android:textColor="#FFFFFF" />
+        <!-- Tabla de horarios -->
+        <TableLayout
+            android:id="@+id/tableLayoutHorario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1,2,3,4,5"
+            android:shrinkColumns="1,2,3,4,5"
+            android:background="#F5F5F5"
+            android:padding="4dp">
+
+            <!-- Fila de encabezado -->
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:padding="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="L"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:gravity="center"
+                    android:background="#B7D7B7" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="M"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:gravity="center"
+                    android:background="#B7D7B7" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mi"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:gravity="center"
+                    android:background="#B7D7B7" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="J"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:gravity="center"
+                    android:background="#B7D7B7" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="V"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:gravity="center"
+                    android:background="#B7D7B7" />
             </TableRow>
 
-            <!-- Aquí se agregarán dinámicamente las filas de horario desde Java -->
+            <!-- Aquí se llenarán dinámicamente las filas desde el código Java -->
+
         </TableLayout>
-    </ScrollView>
-</HorizontalScrollView>
+
+        <!-- Leyenda de colores -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Disponible"
+                android:textColor="#4CAF50"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pendiente"
+                android:textColor="#FFA726"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Ocupado"
+                android:textColor="#E53935"
+                android:padding="8dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

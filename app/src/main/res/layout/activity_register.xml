@@ -12,7 +12,7 @@
         android:layout_height="183dp"
         android:layout_marginBottom="32dp"
         android:contentDescription="icono register"
-        android:src="@drawable/register" />
+        android:src="@drawable/register1" />
 
     <EditText
         android:id="@+id/nameEditText"

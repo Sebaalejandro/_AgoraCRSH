@@ -43,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         goToLoginTextView = findViewById(R.id.goToLoginTextView);
 
         // Cargar roles al Spinner con diseño personalizado
-        String[] roles = {"Docente","Paradocentes", "Director", "Inspector"};
+        String[] roles = {"Docente","Paradocente", "Coordinador", "Inspector","PIE"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, roles);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         roleSpinner.setAdapter(adapter);

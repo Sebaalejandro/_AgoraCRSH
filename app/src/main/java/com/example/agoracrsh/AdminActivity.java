@@ -7,7 +7,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class AdminActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore firestore;
+    private TextView bienvenidaAdminText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,12 +23,28 @@ public class AdminActivity extends AppCompatActivity {
 
         setTitle("Bienvenido");
 
-        TextView bienvenidaText = findViewById(R.id.bienvenidaAdminText);
-        bienvenidaText.setText("Bienvenido Administrador");
+        bienvenidaAdminText = findViewById(R.id.bienvenidaAdminText);
+        mAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+
+        String uid = mAuth.getCurrentUser().getUid();
+
+        firestore.collection("usuarios").document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String nombre = documentSnapshot.getString("nombre");
+
+                    if (nombre != null && !nombre.isEmpty()) {
+                        bienvenidaAdminText.setText("Bienvenido " + nombre);
+                    } else {
+                        bienvenidaAdminText.setText("Bienvenido/a Administrador");
+                    }
+                })
+                .addOnFailureListener(e -> bienvenidaAdminText.setText("Bienvenido/a Administrador"));
 
         new Handler().postDelayed(() -> {
             startActivity(new Intent(AdminActivity.this, AdminMenuActivity.class));
             finish();
-        }, 3000); // 3 segundos
+        }, 1500); // Solo Durara 1 Segundo Y Medio Esta Pagina xD
     }
 }

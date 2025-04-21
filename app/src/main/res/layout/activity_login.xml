@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/logoImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="242dp"
+        android:layout_width="481dp"
+        android:layout_height="275dp"
         android:layout_marginBottom="32dp"
         android:contentDescription="Logo del Colegio"
         android:src="@drawable/logo" />
