@@ -29,19 +29,10 @@
             android:textColor="@color/primaryColor" />
 
         <Button
-            android:id="@+id/btnSolicitudesData"
+            android:id="@+id/btnSolicitudesDeEquipos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Solicitudes de Datas"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/accentColor"
-            android:textColor="@color/primaryColor" />
-
-        <Button
-            android:id="@+id/btnPendientes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Reservas Pendientes"
+            android:text="Solicitudes de Equipos"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/accentColor"
             android:textColor="@color/primaryColor" />

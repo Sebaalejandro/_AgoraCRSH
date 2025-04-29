@@ -1,6 +1,9 @@
 package com.example.agoracrsh;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -8,7 +11,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,8 +33,16 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         setTitle("AgoraCRSH");
+
+        // 🔐 Pedir permiso de notificaciones si Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1001);
+            }
+        }
 
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
@@ -40,12 +54,10 @@ public class LoginActivity extends AppCompatActivity {
         goToRegisterTextView = findViewById(R.id.goToRegisterTextView);
         forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
 
-        // Chequear si ya hay sesión activa
+        // Si ya hay sesión activa, saltar login
         if (mAuth.getCurrentUser() != null) {
             String uid = mAuth.getCurrentUser().getUid();
-            firestore.collection("usuarios")
-                    .document(uid)
-                    .get()
+            firestore.collection("usuarios").document(uid).get()
                     .addOnSuccessListener(documentSnapshot -> {
                         String rol = documentSnapshot.getString("rol");
                         if ("admin".equals(rol)) {
@@ -90,9 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String userId = mAuth.getCurrentUser().getUid();
-                    firestore.collection("usuarios")
-                            .document(userId)
-                            .get()
+                    firestore.collection("usuarios").document(userId).get()
                             .addOnSuccessListener(documentSnapshot -> {
                                 if (documentSnapshot.exists()) {
                                     String rol = documentSnapshot.getString("rol");
@@ -111,12 +121,24 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(this, "Usuario no encontrado en la base de datos", Toast.LENGTH_SHORT).show();
                                 }
                             })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Error al obtener datos del usuario", Toast.LENGTH_SHORT).show();
-                            });
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Error al obtener datos del usuario", Toast.LENGTH_SHORT).show());
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error al iniciar sesión: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error al iniciar sesión: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    //  Manejo del resultado del permiso
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1001) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permiso de notificación concedido", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "No podrás recibir notificaciones", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

@@ -20,19 +20,28 @@
             android:layout_marginBottom="24dp" />
 
         <Button
-            android:id="@+id/btnReservarSala"
+            android:id="@+id/btnReservarSala1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Reservar Sala de Enlace"
+            android:text="Reservar Sala de Enlace 1"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/accentColor"
             android:textColor="@color/primaryColor" />
 
         <Button
-            android:id="@+id/btnReservarProyector"
+            android:id="@+id/btnReservarSala2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Reservar Proyector"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/accentColor"
+            android:text="Reservar Sala de Enlace 2 "
+            android:textColor="@color/primaryColor" />
+
+        <Button
+            android:id="@+id/btnReservarEquipo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reservar Equipo"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/accentColor"
             android:textColor="@color/primaryColor" />

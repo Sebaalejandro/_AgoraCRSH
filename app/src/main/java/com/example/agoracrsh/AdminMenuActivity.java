@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class AdminMenuActivity extends AppCompatActivity {
 
-    private Button btnSolicitudesSala, btnSolicitudesData, btnPendientes, btnInventario, btnCalendario, btnCerrarSesion;
+    private Button btnSolicitudesSala, btnSolicitudesEQuipos, btnInventario, btnCalendario, btnCerrarSesion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,23 +19,21 @@ public class AdminMenuActivity extends AppCompatActivity {
         setTitle("Panel Administrador");
 
         btnSolicitudesSala = findViewById(R.id.btnSolicitudesSala);
-        btnSolicitudesData = findViewById(R.id.btnSolicitudesData);
-        btnPendientes = findViewById(R.id.btnPendientes);
+        btnSolicitudesEQuipos = findViewById(R.id.btnSolicitudesDeEquipos);
         btnInventario = findViewById(R.id.btnInventario);
         btnCalendario = findViewById(R.id.btnCalendario);
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
         btnSolicitudesSala.setOnClickListener(v -> {
-            // TODO: startActivity(new Intent(this, VerSolicitudesSalaActivity.class));
+            Intent intent = new Intent(AdminMenuActivity.this, AdminSolicitudesSalaActivity.class);
+            startActivity(intent);
         });
 
-        btnSolicitudesData.setOnClickListener(v -> {
-            // TODO: startActivity(new Intent(this, VerSolicitudesDataActivity.class));
+
+        btnSolicitudesEQuipos.setOnClickListener(v -> {
+            // TODO: startActivity(new Intent(this, VerSolicitudesEquiposActivity.class));
         });
 
-        btnPendientes.setOnClickListener(v -> {
-            // TODO: startActivity(new Intent(this, VerReservasPendientesActivity.class));
-        });
 
         btnInventario.setOnClickListener(v -> {
             // TODO: startActivity(new Intent(this, InventarioActivity.class));
