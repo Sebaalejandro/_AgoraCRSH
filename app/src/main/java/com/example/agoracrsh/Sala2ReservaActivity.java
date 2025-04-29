@@ -54,7 +54,7 @@ public class Sala2ReservaActivity extends AppCompatActivity {
     }
 
     private void cargarReservasDesdeFirestore() {
-        firestore.collection("reservas")
+        firestore.collection("reserva_salas")
                 .get()
                 .addOnSuccessListener(query -> {
                     for (var doc : query) {
@@ -178,9 +178,10 @@ public class Sala2ReservaActivity extends AppCompatActivity {
         reserva.put("sala", sala);
         reserva.put("curso", curso);
         reserva.put("estado", "pendiente");
-        reserva.put("profesor", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        reserva.put("tipo", "sala"); // <-- ¡ESTO ES CLAVE!
+        reserva.put("funcionario", FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
-        firestore.collection("reservas")
+        firestore.collection("reserva_salas")
                 .add(reserva)
                 .addOnSuccessListener(documentReference ->
                         Toast.makeText(this, "Solicitud enviada para aprobación", Toast.LENGTH_SHORT).show())

@@ -46,7 +46,7 @@ public class SolicitudSalaAdapter extends RecyclerView.Adapter<SolicitudSalaAdap
                 "\nDía: " + solicitud.get("dia") +
                 "\nHora: " + solicitud.get("hora") +
                 "\nCurso: " + solicitud.get("curso") +
-                "\nProfesor: " + solicitud.get("profesor");
+                "\nFuncionario: " + solicitud.get("funcionario");
 
         holder.infoTextView.setText(info);
 
@@ -61,7 +61,7 @@ public class SolicitudSalaAdapter extends RecyclerView.Adapter<SolicitudSalaAdap
 
     private void actualizarEstado(String id, String nuevoEstado) {
         FirebaseFirestore.getInstance()
-                .collection("reservas")
+                .collection("reserva_salas")
                 .document(id)
                 .update("estado", nuevoEstado)
                 .addOnSuccessListener(unused ->

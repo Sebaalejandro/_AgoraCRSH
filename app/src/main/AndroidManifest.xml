@@ -44,11 +44,13 @@
         <!-- Menú de profesor -->
         <activity android:name=".MainActivity" android:exported="true" />
 
-        <!-- Reserva de salas -->
+        <!-- Reserva de salas y Equipos -->
         <activity android:name=".SalaReservaActivity" android:exported="true" />
         <activity android:name=".Sala2ReservaActivity" android:exported="true" />
-        <!-- Reserva de salas DEL ADMIN -->
+        <activity android:name=".EquipoReservaActivity" android:exported="true" />
+        <!-- Reserva de salas y equipos  DEL ADMIN -->
         <activity android:name=".AdminSolicitudesSalaActivity" android:exported="true" />
+        <activity android:name=".AdminSolicitudesEquipoActivity" android:exported="true" />
         <!--
         <activity android:name=".InventarioActivity" android:exported="true" />
         <activity android:name=".CalendarioActivity" android:exported="true" />

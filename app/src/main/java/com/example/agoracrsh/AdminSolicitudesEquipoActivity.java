@@ -10,32 +10,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.agoracrsh.adapter.SolicitudSalaAdapter;
+import com.example.agoracrsh.adapter.SolicitudEquipoAdapter;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AdminSolicitudesSalaActivity extends AppCompatActivity {
+public class AdminSolicitudesEquipoActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private SolicitudSalaAdapter adapter;
+    private TextView textoVacio;
+    private SolicitudEquipoAdapter adapter;
     private List<Map<String, Object>> listaSolicitudes;
     private List<String> listaIds;
-    private TextView textoVacio;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_solicitudes_sala);
-        setTitle("Solicitudes de Sala");
+        setContentView(R.layout.activity_admin_solicitudes_sala); // reutiliza el mismo XML
+        setTitle("Solicitudes de Equipos");
 
         recyclerView = findViewById(R.id.recyclerSolicitudes);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         textoVacio = findViewById(R.id.textoVacio);
         textoVacio.setVisibility(View.GONE);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         listaSolicitudes = new ArrayList<>();
         listaIds = new ArrayList<>();
@@ -45,7 +45,7 @@ public class AdminSolicitudesSalaActivity extends AppCompatActivity {
 
     private void cargarSolicitudesPendientes() {
         FirebaseFirestore.getInstance()
-                .collection("reserva_salas")
+                .collection("reserva_equipo") // CAMBIADO: ahora lee de "reserva_equipo"
                 .whereEqualTo("estado", "pendiente")
                 .get()
                 .addOnSuccessListener(query -> {
@@ -63,7 +63,7 @@ public class AdminSolicitudesSalaActivity extends AppCompatActivity {
                         textoVacio.setVisibility(View.GONE);
                     }
 
-                    adapter = new SolicitudSalaAdapter(listaSolicitudes, listaIds, this);
+                    adapter = new SolicitudEquipoAdapter(listaSolicitudes, listaIds, this);
                     recyclerView.setAdapter(adapter);
                 })
                 .addOnFailureListener(e ->

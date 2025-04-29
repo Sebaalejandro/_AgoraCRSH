@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@color/primaryColor">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Solicitud de Equipos"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="@color/accentColor"
+            android:layout_marginBottom="24dp" />
+
+        <Spinner
+            android:id="@+id/spinnerTipoEquipo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/primaryColor"
+            android:backgroundTint="@color/accentColor"
+            android:popupBackground="@android:color/white"
+            android:theme="@style/Theme.MaterialComponents.Light" />
+
+        <Spinner
+            android:id="@+id/spinnerDia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/primaryColor"
+            android:backgroundTint="@color/accentColor"
+            android:popupBackground="@android:color/white"
+            android:theme="@style/Theme.MaterialComponents.Light" />
+
+        <Spinner
+            android:id="@+id/spinnerBloque"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/primaryColor"
+            android:backgroundTint="@color/accentColor"
+            android:popupBackground="@android:color/white"
+            android:theme="@style/Theme.MaterialComponents.Light" />
+
+        <EditText
+            android:id="@+id/etCurso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ingresa el Curso (Ej: 3°B)"
+            android:textColor="@color/accentColor"
+            android:textColorHint="#CCCCCC"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/white" />
+
+        <Button
+            android:id="@+id/btnEnviarSolicitud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enviar Solicitud"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/accentColor"
+            android:textColor="@color/primaryColor" />
+    </LinearLayout>
+</ScrollView>

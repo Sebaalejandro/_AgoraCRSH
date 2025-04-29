@@ -51,9 +51,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:entries="@array/roles_array"
         android:backgroundTint="@color/accentColor"
-        android:popupBackground="@android:color/white"
+        android:entries="@array/roles_array"
+        android:popupBackground="@color/accentColor"
         android:theme="@style/Theme.MaterialComponents.Light" />
 
     <Button

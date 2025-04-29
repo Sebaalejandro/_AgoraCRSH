@@ -11,8 +11,33 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string-array name="roles_array">
-        <item>profesor</item>
+        <item>funcionario</item>
         <item>admin</item>
     </string-array>
+    <string-array name="tipo_equipo_array">
+        <item>Selecciona un equipo</item>
+        <item>Data</item>
+        <item>Notebook</item>
+        <item>Parlante</item>
+</string-array>
+    <string-array name="dias_semana_array">
+        <item>Selecciona un Dia </item>
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miércoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+    </string-array>
+
+    <string-array name="bloques_horarios_array">
+        <item>Selecciona una Hora</item>
+        <item>08:00 - 09:30</item>
+        <item>09:45 - 11:15</item>
+        <item>11:25 - 12:55</item>
+        <item>13:55 - 15:25</item>
+        <item>15:35 - 17:05</item>
+    </string-array>
+
+
 
 </resources>
