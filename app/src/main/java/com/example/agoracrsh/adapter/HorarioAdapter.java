@@ -85,7 +85,7 @@ public class HorarioAdapter extends RecyclerView.Adapter<HorarioAdapter.ViewHold
         reserva.put("estado", "pendiente");
         reserva.put("profesor", user.getEmail());
 
-        firestore.collection("reservas")
+        firestore.collection("reservas_salas")
                 .add(reserva)
                 .addOnSuccessListener(doc -> Toast.makeText(context, "Solicitud enviada", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());

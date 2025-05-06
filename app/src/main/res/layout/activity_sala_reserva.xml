@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:stretchColumns="1,2,3,4,5"
             android:shrinkColumns="1,2,3,4,5"
-            android:background="#F5F5F5"
+            android:background="#F0F4F8"
             android:padding="4dp">
 
             <!-- Fila de encabezado -->
@@ -45,9 +45,9 @@
                     android:text="L"
                     android:padding="8dp"
                     android:textStyle="bold"
-                    android:textColor="#000000"
+                    android:textColor="#FFFFFF"
                     android:gravity="center"
-                    android:background="#B7D7B7" />
+                    android:background="#188F97" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -55,9 +55,9 @@
                     android:text="M"
                     android:padding="8dp"
                     android:textStyle="bold"
-                    android:textColor="#000000"
+                    android:textColor="#FFFFFF"
                     android:gravity="center"
-                    android:background="#B7D7B7" />
+                    android:background="#188F97" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -65,9 +65,9 @@
                     android:text="Mi"
                     android:padding="8dp"
                     android:textStyle="bold"
-                    android:textColor="#000000"
+                    android:textColor="#FFFFFF"
                     android:gravity="center"
-                    android:background="#B7D7B7" />
+                    android:background="#188F97" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -75,9 +75,9 @@
                     android:text="J"
                     android:padding="8dp"
                     android:textStyle="bold"
-                    android:textColor="#000000"
+                    android:textColor="#FFFFFF"
                     android:gravity="center"
-                    android:background="#B7D7B7" />
+                    android:background="#188F97" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -85,9 +85,9 @@
                     android:text="V"
                     android:padding="8dp"
                     android:textStyle="bold"
-                    android:textColor="#000000"
+                    android:textColor="#FFFFFF"
                     android:gravity="center"
-                    android:background="#B7D7B7" />
+                    android:background="#188F97" />
             </TableRow>
 
             <!-- Aquí se llenarán dinámicamente las filas desde el código Java -->
@@ -108,21 +108,21 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:text=" Disponible"
-                android:textColor="#4CAF50" />
+                android:textColor="#43A047" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:text="Pendiente"
-                android:textColor="#FFA726" />
+                android:textColor="#FB8C00" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:text=" Ocupado"
-                android:textColor="#E53935" />
+                android:textColor="#D32F2F" />
         </LinearLayout>
 
     </LinearLayout>

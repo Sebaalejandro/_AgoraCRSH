@@ -45,6 +45,6 @@ public class AdminActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             startActivity(new Intent(AdminActivity.this, AdminMenuActivity.class));
             finish();
-        }, 1500); // Solo Durara 1 Segundo Y Medio Esta Pagina xD
+        }, 1500); // Solo Durara 1 Segundo Y Medio Esta Pagina
     }
 }

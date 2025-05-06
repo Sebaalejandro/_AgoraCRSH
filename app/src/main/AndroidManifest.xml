@@ -18,7 +18,6 @@
             </intent-filter>
         </service>
 
-
         <!-- Pantalla de inicio -->
         <activity
             android:name=".LoginActivity"
@@ -38,7 +37,10 @@
         <!-- Menú principal del administrador -->
         <activity android:name=".AdminMenuActivity" android:exported="true" />
 
-        <!-- Pantalla principal para profesor (redireccionada desde roles comunes) -->
+        <!-- Pantalla de aprobación de usuarios -->
+        <activity android:name=".AceptarUsuariosActivity" android:exported="true" />
+
+        <!-- Pantalla principal para profesor -->
         <activity android:name=".ProfesorActivity" android:exported="true" />
 
         <!-- Menú de profesor -->
@@ -48,9 +50,11 @@
         <activity android:name=".SalaReservaActivity" android:exported="true" />
         <activity android:name=".Sala2ReservaActivity" android:exported="true" />
         <activity android:name=".EquipoReservaActivity" android:exported="true" />
-        <!-- Reserva de salas y equipos  DEL ADMIN -->
+
+        <!-- Solicitudes para el admin -->
         <activity android:name=".AdminSolicitudesSalaActivity" android:exported="true" />
         <activity android:name=".AdminSolicitudesEquipoActivity" android:exported="true" />
+
         <!--
         <activity android:name=".InventarioActivity" android:exported="true" />
         <activity android:name=".CalendarioActivity" android:exported="true" />

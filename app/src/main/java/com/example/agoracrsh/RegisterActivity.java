@@ -42,8 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.registerButton);
         goToLoginTextView = findViewById(R.id.goToLoginTextView);
 
-        // Cargar roles al Spinner con diseño personalizado
-        String[] roles = {"Docente","Paradocente", "Coordinador", "Inspector","PIE"};
+        String[] roles = {"Docente", "Paradocente", "Coordinador", "Inspector", "PIE"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, roles);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         roleSpinner.setAdapter(adapter);
@@ -76,20 +75,13 @@ public class RegisterActivity extends AppCompatActivity {
                     datos.put("email", email);
                     datos.put("password", password);
                     datos.put("rol", rolSeleccionado);
+                    datos.put("aprobado", false); // <- CLAVE
 
                     firestore.collection("usuarios").document(uid)
                             .set(datos)
                             .addOnSuccessListener(unused -> {
-                                Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-
-                                // Redirige al panel correspondiente según el rol
-                                Intent intent;
-                                if ("admin".equals(rolSeleccionado)) {
-                                    intent = new Intent(this, AdminActivity.class);
-                                } else {
-                                    intent = new Intent(this, ProfesorActivity.class);
-                                }
-                                startActivity(intent);
+                                Toast.makeText(this, "Registro exitoso. Espera aprobación del administrador.", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(this, LoginActivity.class));
                                 finish();
                             })
                             .addOnFailureListener(e ->

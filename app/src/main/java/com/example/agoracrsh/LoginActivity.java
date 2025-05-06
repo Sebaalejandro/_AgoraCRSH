@@ -35,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         setTitle("AgoraCRSH");
 
-        // 🔐 Pedir permiso de notificaciones si Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -54,18 +53,23 @@ public class LoginActivity extends AppCompatActivity {
         goToRegisterTextView = findViewById(R.id.goToRegisterTextView);
         forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
 
-        // Si ya hay sesión activa, saltar login
         if (mAuth.getCurrentUser() != null) {
             String uid = mAuth.getCurrentUser().getUid();
             firestore.collection("usuarios").document(uid).get()
                     .addOnSuccessListener(documentSnapshot -> {
-                        String rol = documentSnapshot.getString("rol");
-                        if ("admin".equals(rol)) {
-                            startActivity(new Intent(this, AdminActivity.class));
+                        Boolean aprobado = documentSnapshot.getBoolean("aprobado");
+                        if (aprobado != null && aprobado) {
+                            String rol = documentSnapshot.getString("rol");
+                            if ("admin".equals(rol)) {
+                                startActivity(new Intent(this, AdminActivity.class));
+                            } else {
+                                startActivity(new Intent(this, ProfesorActivity.class));
+                            }
+                            finish();
                         } else {
-                            startActivity(new Intent(this, ProfesorActivity.class));
+                            Toast.makeText(this, "Tu cuenta aún no ha sido aprobada por el administrador", Toast.LENGTH_SHORT).show();
+                            mAuth.signOut();
                         }
-                        finish();
                     });
         }
 
@@ -105,18 +109,24 @@ public class LoginActivity extends AppCompatActivity {
                     firestore.collection("usuarios").document(userId).get()
                             .addOnSuccessListener(documentSnapshot -> {
                                 if (documentSnapshot.exists()) {
-                                    String rol = documentSnapshot.getString("rol");
-                                    if ("admin".equals(rol)) {
-                                        startActivity(new Intent(LoginActivity.this, AdminActivity.class));
-                                    } else if ("profesor".equals(rol)
-                                            || "para docentes".equals(rol)
-                                            || "director".equals(rol)
-                                            || "inspector".equals(rol)) {
-                                        startActivity(new Intent(LoginActivity.this, ProfesorActivity.class));
+                                    Boolean aprobado = documentSnapshot.getBoolean("aprobado");
+                                    if (aprobado != null && aprobado) {
+                                        String rol = documentSnapshot.getString("rol");
+                                        if ("admin".equals(rol)) {
+                                            startActivity(new Intent(LoginActivity.this, AdminActivity.class));
+                                        } else if ("profesor".equals(rol)
+                                                || "para docentes".equals(rol)
+                                                || "director".equals(rol)
+                                                || "inspector".equals(rol)) {
+                                            startActivity(new Intent(LoginActivity.this, ProfesorActivity.class));
+                                        } else {
+                                            Toast.makeText(this, "Rol no válido", Toast.LENGTH_SHORT).show();
+                                        }
+                                        finish();
                                     } else {
-                                        Toast.makeText(this, "Rol no válido", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "Tu cuenta aún no ha sido aprobada", Toast.LENGTH_SHORT).show();
+                                        mAuth.signOut();
                                     }
-                                    finish();
                                 } else {
                                     Toast.makeText(this, "Usuario no encontrado en la base de datos", Toast.LENGTH_SHORT).show();
                                 }
@@ -128,7 +138,6 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al iniciar sesión: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    //  Manejo del resultado del permiso
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
