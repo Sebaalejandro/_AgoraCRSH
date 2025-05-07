@@ -57,32 +57,32 @@ public class AceptarUsuariosActivity extends AppCompatActivity {
                     }
 
                     if (queryDocumentSnapshots.isEmpty()) {
-                        Toast.makeText(this, "No hay usuarios pendientes", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No Hay Usuarios Pendientes", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al cargar usuarios", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Error Al Cargar Usuarios", Toast.LENGTH_SHORT).show());
     }
 
     private void aprobarUsuario(String uid) {
         db.collection("usuarios").document(uid)
                 .update("aprobado", true)
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Usuario aprobado", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Usuario Aprobado", Toast.LENGTH_SHORT).show();
                     cargarUsuariosPendientes();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al aprobar usuario", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Error Al Aprobar Usuario", Toast.LENGTH_SHORT).show());
     }
 
     private void rechazarUsuario(String uid) {
         db.collection("usuarios").document(uid)
                 .delete()
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Usuario rechazado y eliminado", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Usuario Rechazado y Eliminado", Toast.LENGTH_SHORT).show();
                     cargarUsuariosPendientes();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al rechazar usuario", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Error Al Rechazar Usuario", Toast.LENGTH_SHORT).show());
     }
 }
