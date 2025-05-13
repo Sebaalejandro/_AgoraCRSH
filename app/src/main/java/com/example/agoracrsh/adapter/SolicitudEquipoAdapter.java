@@ -48,7 +48,7 @@ public class SolicitudEquipoAdapter extends RecyclerView.Adapter<SolicitudEquipo
         // Botón de aprobar
         holder.btnAprobar.setOnClickListener(v -> {
             String id = listaIds.get(position);
-            FirebaseFirestore.getInstance().collection("reserva_equipo") // ✅ CORREGIDO
+            FirebaseFirestore.getInstance().collection("reserva_equipo")
                     .document(id)
                     .update("estado", "aprobado")
                     .addOnSuccessListener(aVoid ->

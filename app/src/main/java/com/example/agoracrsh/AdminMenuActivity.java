@@ -40,8 +40,10 @@ public class AdminMenuActivity extends AppCompatActivity {
         });
 
         btnCalendario.setOnClickListener(v -> {
-            // TODO: startActivity(new Intent(this, CalendarioActivity.class));
+            Intent intent = new Intent(AdminMenuActivity.this, CalendarioAdminActivity.class);
+            startActivity(intent);
         });
+
 
         btnAceptarUsers.setOnClickListener(v -> {
             Intent intent = new Intent(AdminMenuActivity.this, AceptarUsuariosActivity.class);

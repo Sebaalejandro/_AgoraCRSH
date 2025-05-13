@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnVerReservas.setOnClickListener(v -> {
-            // A futuro: Ver mis reservas
+            startActivity(new Intent(MainActivity.this, MisReservasActivity.class));
         });
 
         btnCerrarSesion.setOnClickListener(v -> {

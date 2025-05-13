@@ -45,6 +45,8 @@
 
         <!-- Menú de profesor -->
         <activity android:name=".MainActivity" android:exported="true" />
+        <!-- Mis reservas para profesor o usuario -->
+        <activity android:name=".MisReservasActivity" android:exported="true" />
 
         <!-- Reserva de salas y Equipos -->
         <activity android:name=".SalaReservaActivity" android:exported="true" />
@@ -55,10 +57,11 @@
         <activity android:name=".AdminSolicitudesSalaActivity" android:exported="true" />
         <activity android:name=".AdminSolicitudesEquipoActivity" android:exported="true" />
 
+        <!-- Pantalla para que el admin vea todas las reservas -->
+        <activity android:name=".CalendarioAdminActivity" android:exported="true"/>
         <!--
-        <activity android:name=".InventarioActivity" android:exported="true" />
-        <activity android:name=".CalendarioActivity" android:exported="true" />
-        -->
+        <activity android:name=".InventarioActivity" android:exported="true" /> -->
+
 
     </application>
 </manifest>
