@@ -22,16 +22,22 @@ import java.util.*;
 
 public class SalaReservaActivity extends AppCompatActivity {
 
+    // Referencia a la tabla del layout
     private TableLayout tableLayoutHorario;
+
+    // Firestore para leer y guardar reservas
     private FirebaseFirestore firestore;
 
+    // Lista de bloques horarios
     private final List<String> bloques = Arrays.asList(
             "08:00 - 09:30", "09:45 - 11:15", "11:25 - 12:55",
             "13:55 - 15:25", "15:35 - 17:05"
     );
 
+    // Días abreviados
     private final List<String> diasAbreviados = Arrays.asList("L", "M", "X", "J", "V");
 
+    // Mapa para convertir abreviaturas de días en nombres completos
     private final Map<String, String> diaCompletoPorAbreviado = new HashMap<String, String>() {{
         put("L", "Lunes");
         put("M", "Martes");
@@ -40,6 +46,7 @@ public class SalaReservaActivity extends AppCompatActivity {
         put("V", "Viernes");
     }};
 
+    // Mapa para almacenar las reservas ya existentes
     private final Map<String, Map<String, String>> reservasExistentes = new HashMap<>();
 
     @Override
@@ -54,6 +61,7 @@ public class SalaReservaActivity extends AppCompatActivity {
         cargarReservasDesdeFirestore();
     }
 
+    // Cargar reservas desde Firestore y filtrarlas según el día y la hora
     private void cargarReservasDesdeFirestore() {
         firestore.collection("reserva_salas")
                 .get()
@@ -65,6 +73,7 @@ public class SalaReservaActivity extends AppCompatActivity {
                         String estado = doc.getString("estado");
 
                         if (dia != null && hora != null && sala != null && estado != null) {
+                            // Verificar si la reserva aún está vigente (del día actual y hora válida)
                             Calendar calendario = Calendar.getInstance();
                             int diaSemanaHoy = calendario.get(Calendar.DAY_OF_WEEK);
                             String diaHoy = "";
@@ -78,6 +87,7 @@ public class SalaReservaActivity extends AppCompatActivity {
                             }
 
                             boolean reservaActiva = true;
+
                             if (dia.equals(diaHoy)) {
                                 try {
                                     String[] partesHora = hora.split("-");
@@ -102,16 +112,19 @@ public class SalaReservaActivity extends AppCompatActivity {
                             }
                         }
                     }
+
                     cargarHorarioConBloqueo();
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error al cargar reservas", Toast.LENGTH_SHORT).show());
     }
 
+    // Mostrar la tabla de horarios con botones bloqueados o activos según las reservas
     private void cargarHorarioConBloqueo() {
         for (String bloque : bloques) {
             TableRow fila = new TableRow(this);
 
+            // Celda de hora
             TextView txtHora = new TextView(this);
             txtHora.setText(bloque);
             txtHora.setTextColor(Color.BLACK);
@@ -121,7 +134,6 @@ public class SalaReservaActivity extends AppCompatActivity {
 
             for (String diaAbrev : diasAbreviados) {
                 String diaCompleto = diaCompletoPorAbreviado.get(diaAbrev);
-
                 Button btn = new Button(this);
                 btn.setTextSize(10f);
                 btn.setAllCaps(false);
@@ -145,6 +157,7 @@ public class SalaReservaActivity extends AppCompatActivity {
         }
     }
 
+    // Configura el botón según su estado: ocupado, pendiente o disponible
     private void configurarBoton(Button btn, String estado, String dia, String hora, String sala) {
         switch (estado) {
             case "ocupado":
@@ -168,6 +181,7 @@ public class SalaReservaActivity extends AppCompatActivity {
         }
     }
 
+    // Mostrar formulario para ingresar el curso asociado a la reserva
     private void mostrarFormularioReserva(String dia, String hora, String sala) {
         final EditText inputCurso = new EditText(this);
         inputCurso.setHint("Ej: 4° Medio B");
@@ -188,6 +202,7 @@ public class SalaReservaActivity extends AppCompatActivity {
                 .show();
     }
 
+    // Mostrar confirmación antes de enviar la reserva
     private void mostrarConfirmacionFinal(String dia, String hora, String sala, String curso) {
         String mensaje = "¿Estás seguro que deseas reservar " + sala +
                 " el día " + dia + " a las " + hora + " para el curso \"" + curso + "\"?";
@@ -200,6 +215,7 @@ public class SalaReservaActivity extends AppCompatActivity {
                 .show();
     }
 
+    // Enviar la solicitud de reserva a Firestore
     private void enviarSolicitud(String dia, String hora, String sala, String curso) {
         Map<String, Object> reserva = new HashMap<>();
         reserva.put("dia", dia);
@@ -218,4 +234,3 @@ public class SalaReservaActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al reservar", Toast.LENGTH_SHORT).show());
     }
 }
-

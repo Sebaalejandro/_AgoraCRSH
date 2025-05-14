@@ -22,10 +22,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
+    // Elementos de la interfaz
     private EditText emailEditText, passwordEditText;
     private Button loginButton;
     private TextView goToRegisterTextView, forgotPasswordTextView;
 
+    // Instancias de Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
 
@@ -35,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         setTitle("AgoraCRSH");
 
+        // Solicitar permiso para mostrar notificaciones (solo Android 13 o superior)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -43,16 +46,19 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
+        // Inicializar Firebase
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
+        // Enlazar vistas
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
         goToRegisterTextView = findViewById(R.id.goToRegisterTextView);
         forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
 
+        // Si ya hay un usuario autenticado, comprobar si está aprobado y redirigirlo
         if (mAuth.getCurrentUser() != null) {
             String uid = mAuth.getCurrentUser().getUid();
             firestore.collection("usuarios").document(uid).get()
@@ -73,13 +79,16 @@ public class LoginActivity extends AppCompatActivity {
                     });
         }
 
+        // Evento botón login
         loginButton.setOnClickListener(v -> loginUser());
 
+        // Redirigir a pantalla de registro
         goToRegisterTextView.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
 
+        // Enviar correo de recuperación si el usuario lo solicita
         forgotPasswordTextView.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             if (TextUtils.isEmpty(email)) {
@@ -94,15 +103,18 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // Método que valida y realiza el inicio de sesión
     private void loginUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
+        // Verificar campos vacíos
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Iniciar sesión con Firebase Auth
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String userId = mAuth.getCurrentUser().getUid();
@@ -138,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al iniciar sesión: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
+    // Método que responde a la solicitud de permisos (notificaciones)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {

@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Tema claro sin barra superior -->
+
     <style name="Theme.AgoraCRSH" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Colores principales -->
         <item name="colorPrimary">@color/primaryColor</item>
