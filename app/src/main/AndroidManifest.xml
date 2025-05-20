@@ -59,8 +59,10 @@
 
         <!-- Pantalla para que el admin vea todas las reservas -->
         <activity android:name=".CalendarioAdminActivity" android:exported="true"/>
-        <!--
-        <activity android:name=".InventarioActivity" android:exported="true" /> -->
+        <!-- Pantalla para que de el inventario del admin -->
+        <activity android:name=".InventarioActivity" android:exported="true" />
+
+
 
 
     </application>

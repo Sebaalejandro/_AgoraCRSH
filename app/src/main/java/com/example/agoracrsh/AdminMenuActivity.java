@@ -41,10 +41,10 @@ public class AdminMenuActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Ir a la pantalla de inventario (pendiente de implementar)
+        // Ir a la pantalla de inventario
         btnInventario.setOnClickListener(v -> {
-            // TODO: Implementar la actividad de inventario
-            // startActivity(new Intent(this, InventarioActivity.class));
+            Intent intent = new Intent(AdminMenuActivity.this, InventarioActivity.class);
+            startActivity(intent);
         });
 
         // Ir al calendario semanal del administrador
@@ -61,9 +61,9 @@ public class AdminMenuActivity extends AppCompatActivity {
 
         // Cerrar sesión y volver a la pantalla de login
         btnCerrarSesion.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut(); // Cierra la sesión de Firebase
+            FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(AdminMenuActivity.this, LoginActivity.class));
-            finish(); // Finaliza esta actividad para que no se pueda regresar
+            finish();
         });
     }
 }
