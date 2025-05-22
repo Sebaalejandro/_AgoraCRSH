@@ -39,6 +39,8 @@ android {
 dependencies {
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
+    // Para Las Notificaciones
+    implementation ("com.android.volley:volley:1.2.1")
 
     // Firebase modules
     implementation("com.google.firebase:firebase-analytics")

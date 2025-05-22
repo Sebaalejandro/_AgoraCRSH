@@ -20,24 +20,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.google.firebase.firestore.DocumentReference;
+
 public class Sala2ReservaActivity extends AppCompatActivity {
 
-    // Tabla donde se mostrará el horario
     private TableLayout tableLayoutHorario;
-
-    // Base de datos Firestore
     private FirebaseFirestore firestore;
 
-    // Lista de bloques horarios
     private final List<String> bloques = Arrays.asList(
             "08:00 - 09:30", "09:45 - 11:15", "11:25 - 12:55",
             "13:55 - 15:25", "15:35 - 17:05"
     );
 
-    // Lista de días abreviados
     private final List<String> diasAbreviados = Arrays.asList("L", "M", "X", "J", "V");
 
-    // Conversión de abreviación a nombre completo de día
     private final Map<String, String> diaCompletoPorAbreviado = new HashMap<String, String>() {{
         put("L", "Lunes");
         put("M", "Martes");
@@ -46,7 +42,6 @@ public class Sala2ReservaActivity extends AppCompatActivity {
         put("V", "Viernes");
     }};
 
-    // Mapa para almacenar las reservas existentes con su estado
     private final Map<String, Map<String, String>> reservasExistentes = new HashMap<>();
 
     @Override
@@ -61,7 +56,6 @@ public class Sala2ReservaActivity extends AppCompatActivity {
         cargarReservasDesdeFirestore();
     }
 
-    // Obtener reservas actuales desde Firestore
     private void cargarReservasDesdeFirestore() {
         firestore.collection("reserva_salas")
                 .get()
@@ -73,7 +67,6 @@ public class Sala2ReservaActivity extends AppCompatActivity {
                         String estado = doc.getString("estado");
 
                         if (dia != null && hora != null && sala != null && estado != null) {
-                            // Filtrar reservas pasadas del mismo día
                             Calendar calendario = Calendar.getInstance();
                             int diaSemanaHoy = calendario.get(Calendar.DAY_OF_WEEK);
                             String diaHoy = "";
@@ -112,19 +105,16 @@ public class Sala2ReservaActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Una vez cargadas las reservas, generar la tabla con botones
                     cargarHorarioConBloqueo();
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error al cargar reservas", Toast.LENGTH_SHORT).show());
     }
 
-    // Construir visualmente la tabla de horarios
     private void cargarHorarioConBloqueo() {
         for (String bloque : bloques) {
             TableRow fila = new TableRow(this);
 
-            // Celda con la hora
             TextView txtHora = new TextView(this);
             txtHora.setText(bloque);
             txtHora.setTextColor(Color.BLACK);
@@ -132,7 +122,6 @@ public class Sala2ReservaActivity extends AppCompatActivity {
             txtHora.setPadding(16, 8, 16, 8);
             fila.addView(txtHora);
 
-            // Celdas para cada día
             for (String diaAbrev : diasAbreviados) {
                 String diaCompleto = diaCompletoPorAbreviado.get(diaAbrev);
 
@@ -159,31 +148,29 @@ public class Sala2ReservaActivity extends AppCompatActivity {
         }
     }
 
-    // Configurar el comportamiento y apariencia del botón según su estado
     private void configurarBoton(Button btn, String estado, String dia, String hora, String sala) {
         switch (estado) {
             case "ocupado":
                 btn.setText("Ocupado");
                 btn.setEnabled(false);
-                btn.setBackgroundColor(Color.parseColor("#EF9A9A")); // rojo
+                btn.setBackgroundColor(Color.parseColor("#EF9A9A"));
                 btn.setTextColor(Color.WHITE);
                 break;
             case "pendiente":
                 btn.setText("Pendiente");
                 btn.setEnabled(false);
-                btn.setBackgroundColor(Color.parseColor("#FFCC80")); // naranjo
+                btn.setBackgroundColor(Color.parseColor("#FFCC80"));
                 btn.setTextColor(Color.BLACK);
                 break;
             default:
                 btn.setText("Reservar");
                 btn.setEnabled(true);
-                btn.setBackgroundColor(Color.parseColor("#A5D6A7")); // verde
+                btn.setBackgroundColor(Color.parseColor("#A5D6A7"));
                 btn.setTextColor(Color.BLACK);
                 btn.setOnClickListener(v -> mostrarFormularioReserva(dia, hora, sala));
         }
     }
 
-    // Mostrar formulario para ingresar el curso al hacer clic en Reservar
     private void mostrarFormularioReserva(String dia, String hora, String sala) {
         final EditText inputCurso = new EditText(this);
         inputCurso.setHint("Ej: 4° Medio B");
@@ -204,7 +191,6 @@ public class Sala2ReservaActivity extends AppCompatActivity {
                 .show();
     }
 
-    // Mostrar confirmación final antes de enviar la solicitud
     private void mostrarConfirmacionFinal(String dia, String hora, String sala, String curso) {
         String mensaje = "¿Estás seguro que deseas reservar " + sala +
                 " el día " + dia + " a las " + hora + " para el curso \"" + curso + "\"?";
@@ -217,8 +203,8 @@ public class Sala2ReservaActivity extends AppCompatActivity {
                 .show();
     }
 
-    // Guardar la reserva en Firestore como "pendiente"
     private void enviarSolicitud(String dia, String hora, String sala, String curso) {
+        String correo = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         Map<String, Object> reserva = new HashMap<>();
         reserva.put("dia", dia);
         reserva.put("hora", hora);
@@ -226,12 +212,23 @@ public class Sala2ReservaActivity extends AppCompatActivity {
         reserva.put("curso", curso);
         reserva.put("estado", "pendiente");
         reserva.put("tipo", "sala");
-        reserva.put("funcionario", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        reserva.put("funcionario", correo);
 
         firestore.collection("reserva_salas")
                 .add(reserva)
-                .addOnSuccessListener(documentReference ->
-                        Toast.makeText(this, "Solicitud enviada para aprobación", Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(this, "Solicitud enviada para aprobación", Toast.LENGTH_SHORT).show();
+
+                    // Enviar notificación al admin
+                    Map<String, Object> noti = new HashMap<>();
+                    noti.put("titulo", "Nueva solicitud de sala");
+                    noti.put("mensaje", curso + " solicitó la " + sala + " el " + dia + " a las " + hora);
+                    noti.put("timestamp", System.currentTimeMillis());
+                    noti.put("tipo", "reserva_sala");
+                    noti.put("usuario", correo);
+
+                    firestore.collection("notificaciones_admin").add(noti);
+                })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error al reservar", Toast.LENGTH_SHORT).show());
     }

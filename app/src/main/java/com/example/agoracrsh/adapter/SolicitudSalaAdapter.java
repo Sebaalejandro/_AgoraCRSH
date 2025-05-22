@@ -14,26 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.agoracrsh.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SolicitudSalaAdapter extends RecyclerView.Adapter<SolicitudSalaAdapter.SolicitudViewHolder> {
 
-    // Lista de solicitudes y sus IDs en Firestore
     private final List<Map<String, Object>> listaSolicitudes;
     private final List<String> idsDocumentos;
-
-    // Contexto necesario para mostrar Toast
     private final Context context;
 
-    // Constructor
     public SolicitudSalaAdapter(List<Map<String, Object>> listaSolicitudes, List<String> idsDocumentos, Context context) {
         this.listaSolicitudes = listaSolicitudes;
         this.idsDocumentos = idsDocumentos;
         this.context = context;
     }
 
-    // Crea la vista para cada ítem del RecyclerView
     @NonNull
     @Override
     public SolicitudViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,13 +38,11 @@ public class SolicitudSalaAdapter extends RecyclerView.Adapter<SolicitudSalaAdap
         return new SolicitudViewHolder(vista);
     }
 
-    // Asocia los datos de la solicitud con la vista
     @Override
     public void onBindViewHolder(@NonNull SolicitudViewHolder holder, int position) {
         Map<String, Object> solicitud = listaSolicitudes.get(position);
         String docId = idsDocumentos.get(position);
 
-        // Construir el texto a mostrar en la tarjeta
         String info = "Sala: " + solicitud.get("sala") +
                 "\nDía: " + solicitud.get("dia") +
                 "\nHora: " + solicitud.get("hora") +
@@ -57,30 +51,47 @@ public class SolicitudSalaAdapter extends RecyclerView.Adapter<SolicitudSalaAdap
 
         holder.infoTextView.setText(info);
 
-        // Acciones de los botones
-        holder.btnAceptar.setOnClickListener(v -> actualizarEstado(docId, "ocupado"));
-        holder.btnRechazar.setOnClickListener(v -> actualizarEstado(docId, "rechazado"));
+        holder.btnAceptar.setOnClickListener(v -> actualizarEstado(docId, solicitud, "ocupado"));
+        holder.btnRechazar.setOnClickListener(v -> actualizarEstado(docId, solicitud, "rechazado"));
     }
 
-    // Devuelve el número de solicitudes en la lista
     @Override
     public int getItemCount() {
         return listaSolicitudes.size();
     }
 
-    // Actualiza el estado de la solicitud en Firestore
-    private void actualizarEstado(String id, String nuevoEstado) {
+    private void actualizarEstado(String id, Map<String, Object> solicitud, String nuevoEstado) {
         FirebaseFirestore.getInstance()
                 .collection("reserva_salas")
                 .document(id)
                 .update("estado", nuevoEstado)
-                .addOnSuccessListener(unused ->
-                        Toast.makeText(context, "Estado actualizado a " + nuevoEstado, Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(context, "Estado actualizado a " + nuevoEstado, Toast.LENGTH_SHORT).show();
+
+                    // Enviar notificación al usuario
+                    String correo = (String) solicitud.get("funcionario");
+                    String sala = (String) solicitud.get("sala");
+                    String dia = (String) solicitud.get("dia");
+                    String hora = (String) solicitud.get("hora");
+                    String curso = (String) solicitud.get("curso");
+
+                    Map<String, Object> noti = new HashMap<>();
+                    noti.put("usuario", correo);
+                    noti.put("titulo", "Estado de tu reserva");
+                    noti.put("mensaje", "Tu reserva de la " + sala + " el " + dia + " a las " + hora +
+                            " para el curso " + curso + " fue " +
+                            (nuevoEstado.equals("ocupado") ? "aprobada" : "rechazada"));
+                    noti.put("timestamp", System.currentTimeMillis());
+                    noti.put("tipo", "respuesta_reserva");
+
+                    FirebaseFirestore.getInstance()
+                            .collection("notificaciones_usuario")
+                            .add(noti);
+                })
                 .addOnFailureListener(e ->
                         Toast.makeText(context, "Error al actualizar", Toast.LENGTH_SHORT).show());
     }
 
-    // Clase interna que representa cada ítem del RecyclerView
     public static class SolicitudViewHolder extends RecyclerView.ViewHolder {
         TextView infoTextView;
         Button btnAceptar, btnRechazar;

@@ -19,15 +19,14 @@ import androidx.core.content.ContextCompat;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // Elementos de la interfaz
     private EditText emailEditText, passwordEditText;
     private Button loginButton;
     private TextView goToRegisterTextView, forgotPasswordTextView;
 
-    // Instancias de Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
 
@@ -37,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         setTitle("AgoraCRSH");
 
-        // Solicitar permiso para mostrar notificaciones (solo Android 13 o superior)
+        // Solicitar permiso de notificaciones si Android 13 o superior
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -51,14 +50,13 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
-        // Enlazar vistas
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
         goToRegisterTextView = findViewById(R.id.goToRegisterTextView);
         forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
 
-        // Si ya hay un usuario autenticado, comprobar si está aprobado y redirigirlo
+        // Si ya hay usuario autenticado, verificar si está aprobado
         if (mAuth.getCurrentUser() != null) {
             String uid = mAuth.getCurrentUser().getUid();
             firestore.collection("usuarios").document(uid).get()
@@ -66,12 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                         Boolean aprobado = documentSnapshot.getBoolean("aprobado");
                         if (aprobado != null && aprobado) {
                             String rol = documentSnapshot.getString("rol");
-                            if ("admin".equals(rol)) {
-                                startActivity(new Intent(this, AdminActivity.class));
-                            } else {
-                                startActivity(new Intent(this, ProfesorActivity.class));
-                            }
-                            finish();
+                            redirigirPorRol(rol);
                         } else {
                             Toast.makeText(this, "Tu cuenta aún no ha sido aprobada por el administrador", Toast.LENGTH_SHORT).show();
                             mAuth.signOut();
@@ -79,16 +72,12 @@ public class LoginActivity extends AppCompatActivity {
                     });
         }
 
-        // Evento botón login
         loginButton.setOnClickListener(v -> loginUser());
 
-        // Redirigir a pantalla de registro
         goToRegisterTextView.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
-        // Enviar correo de recuperación si el usuario lo solicita
         forgotPasswordTextView.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             if (TextUtils.isEmpty(email)) {
@@ -103,18 +92,15 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // Método que valida y realiza el inicio de sesión
     private void loginUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        // Verificar campos vacíos
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Iniciar sesión con Firebase Auth
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String userId = mAuth.getCurrentUser().getUid();
@@ -123,18 +109,11 @@ public class LoginActivity extends AppCompatActivity {
                                 if (documentSnapshot.exists()) {
                                     Boolean aprobado = documentSnapshot.getBoolean("aprobado");
                                     if (aprobado != null && aprobado) {
+                                        // Suscripción al topic general de notificaciones
+                                        FirebaseMessaging.getInstance().subscribeToTopic("all");
+
                                         String rol = documentSnapshot.getString("rol");
-                                        if ("admin".equals(rol)) {
-                                            startActivity(new Intent(LoginActivity.this, AdminActivity.class));
-                                        } else if ("profesor".equals(rol)
-                                                || "para docentes".equals(rol)
-                                                || "director".equals(rol)
-                                                || "inspector".equals(rol)) {
-                                            startActivity(new Intent(LoginActivity.this, ProfesorActivity.class));
-                                        } else {
-                                            Toast.makeText(this, "Rol no válido", Toast.LENGTH_SHORT).show();
-                                        }
-                                        finish();
+                                        redirigirPorRol(rol);
                                     } else {
                                         Toast.makeText(this, "Tu cuenta aún no ha sido aprobada", Toast.LENGTH_SHORT).show();
                                         mAuth.signOut();
@@ -150,7 +129,20 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al iniciar sesión: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    // Método que responde a la solicitud de permisos (notificaciones)
+    private void redirigirPorRol(String rol) {
+        if ("admin".equals(rol)) {
+            startActivity(new Intent(this, AdminActivity.class));
+        } else if ("profesor".equals(rol)
+                || "para docentes".equals(rol)
+                || "director".equals(rol)
+                || "inspector".equals(rol)) {
+            startActivity(new Intent(this, ProfesorActivity.class));
+        } else {
+            Toast.makeText(this, "Rol no válido", Toast.LENGTH_SHORT).show();
+        }
+        finish();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {

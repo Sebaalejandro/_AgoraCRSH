@@ -15,12 +15,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MisReservasActivity extends AppCompatActivity {
 
-    // Instancia de la base de datos de Firebase
     private FirebaseFirestore db;
-
-    // Contenedor donde se mostrarán dinámicamente las reservas
     private LinearLayout layoutReservas;
 
     @Override
@@ -32,12 +32,10 @@ public class MisReservasActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         layoutReservas = findViewById(R.id.layoutReservas);
 
-        // Cargar reservas de salas y equipos del usuario actual
         cargarReservas("reserva_salas", "sala");
         cargarReservas("reserva_equipo", "equipo");
     }
 
-    // Método que carga las reservas hechas por el usuario desde una colección específica
     private void cargarReservas(String coleccion, String tipo) {
         String correo = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
@@ -53,26 +51,21 @@ public class MisReservasActivity extends AppCompatActivity {
                         String curso = doc.getString("curso");
                         String estado = doc.getString("estado");
 
-                        // Inflar la vista de cada reserva desde el layout personalizado
                         View card = getLayoutInflater().inflate(R.layout.reservas_item, null);
                         TextView info = card.findViewById(R.id.infoReservaTextView);
                         Button btnCancelar = card.findViewById(R.id.btnCancelarReserva);
                         Button btnEditar = card.findViewById(R.id.btnEditarReserva);
 
-                        // Mostrar información de la reserva
                         info.setText("Día: " + dia + "\nHora: " + hora +
                                 "\n" + tipo.toUpperCase() + ": " + recurso +
                                 "\nCurso: " + curso + "\nEstado: " + estado);
 
-                        // Acciones de los botones
-                        btnCancelar.setOnClickListener(v -> confirmarCancelacion(coleccion, id));
-                        btnEditar.setOnClickListener(v -> editarReserva(coleccion, id, tipo, curso, recurso));
+                        btnCancelar.setOnClickListener(v -> confirmarCancelacion(coleccion, id, curso, recurso, dia, hora, tipo, correo));
+                        btnEditar.setOnClickListener(v -> editarReserva(coleccion, id, tipo, curso, recurso, correo, dia, hora));
 
-                        // Agregar la tarjeta al contenedor principal
                         layoutReservas.addView(card);
                     }
 
-                    // Mostrar mensaje si no hay ninguna reserva
                     if (query.isEmpty() && layoutReservas.getChildCount() == 0) {
                         Toast.makeText(this, "No tienes reservas registradas", Toast.LENGTH_SHORT).show();
                     }
@@ -81,18 +74,16 @@ public class MisReservasActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al cargar reservas", Toast.LENGTH_SHORT).show());
     }
 
-    // Mostrar cuadro de diálogo para confirmar cancelación de reserva
-    private void confirmarCancelacion(String coleccion, String reservaId) {
+    private void confirmarCancelacion(String coleccion, String reservaId, String curso, String recurso, String dia, String hora, String tipo, String correo) {
         new AlertDialog.Builder(this)
                 .setTitle("Cancelar Reserva")
                 .setMessage("¿Estás segurx que quieres cancelar la reserva?")
-                .setPositiveButton("Sí", (dialog, which) -> cancelarReserva(coleccion, reservaId))
+                .setPositiveButton("Sí", (dialog, which) -> cancelarReserva(coleccion, reservaId, curso, recurso, dia, hora, tipo, correo))
                 .setNegativeButton("No", null)
                 .show();
     }
 
-    // Eliminar la reserva seleccionada de Firebase
-    private void cancelarReserva(String coleccion, String reservaId) {
+    private void cancelarReserva(String coleccion, String reservaId, String curso, String recurso, String dia, String hora, String tipo, String correo) {
         db.collection(coleccion).document(reservaId)
                 .delete()
                 .addOnSuccessListener(unused -> {
@@ -100,13 +91,21 @@ public class MisReservasActivity extends AppCompatActivity {
                     layoutReservas.removeAllViews();
                     cargarReservas("reserva_salas", "sala");
                     cargarReservas("reserva_equipo", "equipo");
+
+                    Map<String, Object> noti = new HashMap<>();
+                    noti.put("titulo", "Reserva cancelada");
+                    noti.put("mensaje", curso + " canceló la reserva de " + tipo + ": " + recurso + " el " + dia + " a las " + hora);
+                    noti.put("timestamp", System.currentTimeMillis());
+                    noti.put("tipo", "cancelacion_reserva");
+                    noti.put("usuario", correo);
+
+                    db.collection("notificaciones_admin").add(noti);
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error al cancelar reserva", Toast.LENGTH_SHORT).show());
     }
 
-    // Permite editar curso y sala/equipo de una reserva
-    private void editarReserva(String coleccion, String reservaId, String tipo, String cursoActual, String recursoActual) {
+    private void editarReserva(String coleccion, String reservaId, String tipo, String cursoActual, String recursoActual, String correo, String dia, String hora) {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
@@ -128,7 +127,6 @@ public class MisReservasActivity extends AppCompatActivity {
                     String nuevoCurso = inputCurso.getText().toString().trim();
                     String nuevoRecurso = inputRecurso.getText().toString().trim();
 
-                    // Validar que los campos no estén vacíos
                     if (!nuevoCurso.isEmpty() && !nuevoRecurso.isEmpty()) {
                         db.collection(coleccion).document(reservaId)
                                 .update("curso", nuevoCurso,
@@ -138,6 +136,15 @@ public class MisReservasActivity extends AppCompatActivity {
                                     layoutReservas.removeAllViews();
                                     cargarReservas("reserva_salas", "sala");
                                     cargarReservas("reserva_equipo", "equipo");
+
+                                    Map<String, Object> noti = new HashMap<>();
+                                    noti.put("titulo", "Reserva editada");
+                                    noti.put("mensaje", nuevoCurso + " editó una reserva de " + tipo + ": " + nuevoRecurso + " el " + dia + " a las " + hora);
+                                    noti.put("timestamp", System.currentTimeMillis());
+                                    noti.put("tipo", "edicion_reserva");
+                                    noti.put("usuario", correo);
+
+                                    db.collection("notificaciones_admin").add(noti);
                                 });
                     }
                 })

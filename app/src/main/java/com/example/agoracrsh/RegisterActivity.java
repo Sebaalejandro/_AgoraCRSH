@@ -19,13 +19,13 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    // Elementos de entrada y UI
+    // Elementos UI
     private EditText editTextEmail, editTextPassword, editTextName;
     private Spinner roleSpinner;
     private Button registerButton;
     private TextView goToLoginTextView;
 
-    // Instancias de Firebase para autenticación y base de datos
+    // Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
 
@@ -33,12 +33,12 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        setTitle("Registro AgoraCRSH");
 
-        // Inicializar Firebase
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
-        // Vincular elementos del layout
+        // Vincular vistas
         editTextEmail = findViewById(R.id.emailEditText);
         editTextPassword = findViewById(R.id.passwordEditText);
         editTextName = findViewById(R.id.nameEditText);
@@ -46,58 +46,57 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.registerButton);
         goToLoginTextView = findViewById(R.id.goToLoginTextView);
 
-        // Lista de roles disponibles
+        // Roles disponibles
         String[] roles = {"Docente", "Paradocente", "Coordinador", "Inspector", "PIE"};
-
-        // Adaptador para mostrar los roles en el Spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, roles);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         roleSpinner.setAdapter(adapter);
 
-        // Acciones de los botones
         registerButton.setOnClickListener(v -> registrarUsuario());
-
         goToLoginTextView.setOnClickListener(v -> {
             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-            finish(); // Cierra la pantalla actual
+            finish();
         });
     }
 
-    // Método que registra al usuario y guarda sus datos en Firestore
     private void registrarUsuario() {
-        // Obtener valores ingresados
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String nombre = editTextName.getText().toString().trim();
         String rolSeleccionado = roleSpinner.getSelectedItem().toString().toLowerCase();
 
-        // Validar campos vacíos
         if (email.isEmpty() || password.isEmpty() || nombre.isEmpty()) {
             Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Registrar al usuario en Firebase Authentication
+        // Crear cuenta
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String uid = authResult.getUser().getUid();
 
-                    // Crear objeto con los datos del usuario
                     Map<String, Object> datos = new HashMap<>();
                     datos.put("iD", uid);
                     datos.put("nombre", nombre);
                     datos.put("email", email);
-                    datos.put("password", password); // (No recomendable guardar contraseñas en texto plano)
                     datos.put("rol", rolSeleccionado);
-                    datos.put("aprobado", false); // El administrador debe aprobar al usuario
+                    datos.put("aprobado", false); // Esperando aprobación
 
-                    // Guardar en la colección "usuarios"
                     firestore.collection("usuarios").document(uid)
                             .set(datos)
                             .addOnSuccessListener(unused -> {
-                                Toast.makeText(this, "Registro exitoso. Espera aprobación del administrador.", Toast.LENGTH_SHORT).show();
+                                // 🔔 Enviar notificación al admin
+                                Map<String, Object> noti = new HashMap<>();
+                                noti.put("tipo", "registro");
+                                noti.put("titulo", "Nuevo usuario");
+                                noti.put("mensaje", nombre + " ha solicitado registrarse.");
+                                noti.put("timestamp", System.currentTimeMillis());
+
+                                firestore.collection("notificaciones_admin").add(noti);
+
+                                Toast.makeText(this, "Registro exitoso. Espera aprobación del administrador.", Toast.LENGTH_LONG).show();
                                 startActivity(new Intent(this, LoginActivity.class));
-                                finish(); // Cierra la pantalla actual
+                                finish();
                             })
                             .addOnFailureListener(e ->
                                     Toast.makeText(this, "Error al guardar datos: " + e.getMessage(), Toast.LENGTH_SHORT).show());
