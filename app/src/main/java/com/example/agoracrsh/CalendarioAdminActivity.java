@@ -58,9 +58,7 @@ public class CalendarioAdminActivity extends AppCompatActivity {
 
                         if (dia != null && hora != null && sala != null) {
                             String key = hora + "_" + dia;
-                            String datos = "Curso: " + curso + "\n"
-                                    + "Prof: " + funcionario + "\n"
-                                    + "Estado: " + estado;
+                            String datos = "Curso: " + curso + "\nProf: " + funcionario + "\nEstado: " + estado;
 
                             if (sala.equals("Sala 1")) {
                                 reservasSala1.computeIfAbsent(key, k -> new HashMap<>()).put("info", datos);
@@ -78,7 +76,7 @@ public class CalendarioAdminActivity extends AppCompatActivity {
     }
 
     private void mostrarTablaSalas(TableLayout tabla, Map<String, Map<String, String>> reservas) {
-        tabla.removeAllViews(); // Limpiar antes de agregar
+        tabla.removeAllViews();
 
         for (String bloque : bloques) {
             TableRow fila = new TableRow(this);
@@ -117,7 +115,8 @@ public class CalendarioAdminActivity extends AppCompatActivity {
         firestore.collection("reserva_equipo")
                 .get()
                 .addOnSuccessListener(query -> {
-                    tablaEquipos.removeAllViews(); // Limpiar antes de mostrar
+                    tablaEquipos.removeAllViews();
+
                     for (var doc : query) {
                         String equipo = doc.getString("tipoEquipo");
                         String dia = doc.getString("dia");

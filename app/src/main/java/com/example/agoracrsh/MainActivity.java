@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Botones del menú principal del profesor
     private Button btnReservarSala1, btnReservarSala2, btnReservarEquipo,
-            btnEditarReserva, btnCancelarReserva, btnVerReservas, btnCerrarSesion;
+             btnVerReservas, btnCerrarSesion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +24,7 @@ public class MainActivity extends AppCompatActivity {
         btnReservarSala1 = findViewById(R.id.btnReservarSala1);
         btnReservarSala2 = findViewById(R.id.btnReservarSala2);
         btnReservarEquipo = findViewById(R.id.btnReservarEquipo);
-        btnEditarReserva = findViewById(R.id.btnEditarReserva);
-        btnCancelarReserva = findViewById(R.id.btnCancelarReserva);
+        ;
         btnVerReservas = findViewById(R.id.btnVerReservas);
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
@@ -40,16 +39,6 @@ public class MainActivity extends AppCompatActivity {
         // Navegar a la pantalla para reservar equipos tecnológicos
         btnReservarEquipo.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, EquipoReservaActivity.class)));
-
-        // Funcionalidad futura: editar una reserva existente
-        btnEditarReserva.setOnClickListener(v -> {
-            // A futuro: Editar reserva
-        });
-
-        // Funcionalidad futura: cancelar una reserva existente
-        btnCancelarReserva.setOnClickListener(v -> {
-            // A futuro: Cancelar reserva
-        });
 
         // Navegar a la pantalla donde el profesor puede ver sus reservas
         btnVerReservas.setOnClickListener(v -> {

@@ -47,24 +47,6 @@
             android:textColor="@color/primaryColor" />
 
         <Button
-            android:id="@+id/btnEditarReserva"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Editar Reserva"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/accentColor"
-            android:textColor="@color/primaryColor" />
-
-        <Button
-            android:id="@+id/btnCancelarReserva"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cancelar Reserva"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/accentColor"
-            android:textColor="@color/primaryColor" />
-
-        <Button
             android:id="@+id/btnVerReservas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
