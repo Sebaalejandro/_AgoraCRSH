@@ -1,6 +1,5 @@
 package com.example.agoracrsh;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.TableLayout;
@@ -18,22 +17,16 @@ import java.util.Map;
 
 public class CalendarioAdminActivity extends AppCompatActivity {
 
-    // Referencias a las tablas de Sala 1, Sala 2 y Equipos en el layout
     private TableLayout tablaSala1, tablaSala2, tablaEquipos;
-
-    // Instancia de Firestore para obtener los datos
     private FirebaseFirestore firestore;
 
-    // Bloques horarios disponibles
     private final List<String> bloques = List.of(
             "08:00 - 09:30", "09:45 - 11:15", "11:25 - 12:55",
             "13:55 - 15:25", "15:35 - 17:05"
     );
 
-    // Días de la semana
     private final List<String> dias = List.of("Lunes", "Martes", "Miércoles", "Jueves", "Viernes");
 
-    // Mapas para almacenar las reservas de cada sala
     private final Map<String, Map<String, String>> reservasSala1 = new HashMap<>();
     private final Map<String, Map<String, String>> reservasSala2 = new HashMap<>();
 
@@ -42,18 +35,15 @@ public class CalendarioAdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendario_admin);
 
-        // Enlazar vistas con los IDs del XML
         tablaSala1 = findViewById(R.id.tablaSala1);
         tablaSala2 = findViewById(R.id.tablaSala2);
         tablaEquipos = findViewById(R.id.tablaEquipos);
         firestore = FirebaseFirestore.getInstance();
 
-        // Cargar las reservas desde Firestore
         cargarReservasSalas();
         cargarReservasEquipos();
     }
 
-    // Método para cargar reservas de salas desde Firestore
     private void cargarReservasSalas() {
         firestore.collection("reserva_salas")
                 .get()
@@ -66,14 +56,12 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                         String estado = doc.getString("estado");
                         String funcionario = doc.getString("funcionario");
 
-                        // Validar que los campos necesarios no sean nulos
                         if (dia != null && hora != null && sala != null) {
                             String key = hora + "_" + dia;
-                            String datos = "Curso: " + curso + "\n" +
-                                    "Prof: " + funcionario + "\n" +
-                                    "Estado: " + estado;
+                            String datos = "Curso: " + curso + "\n"
+                                    + "Prof: " + funcionario + "\n"
+                                    + "Estado: " + estado;
 
-                            // Guardar la información en el mapa correspondiente a la sala
                             if (sala.equals("Sala 1")) {
                                 reservasSala1.computeIfAbsent(key, k -> new HashMap<>()).put("info", datos);
                             } else if (sala.equals("Sala 2")) {
@@ -82,7 +70,6 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Mostrar los datos en las tablas
                     mostrarTablaSalas(tablaSala1, reservasSala1);
                     mostrarTablaSalas(tablaSala2, reservasSala2);
                 })
@@ -90,37 +77,33 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al cargar reservas de salas", Toast.LENGTH_SHORT).show());
     }
 
-    // Método para mostrar los datos de reservas en una tabla
     private void mostrarTablaSalas(TableLayout tabla, Map<String, Map<String, String>> reservas) {
+        tabla.removeAllViews(); // Limpiar antes de agregar
+
         for (String bloque : bloques) {
             TableRow fila = new TableRow(this);
 
-            // Primera columna: hora del bloque
             TextView txtHora = new TextView(this);
             txtHora.setText(bloque);
-            txtHora.setTextColor(Color.BLACK);
             txtHora.setGravity(Gravity.CENTER);
-            txtHora.setPadding(16, 8, 16, 8);
+            txtHora.setTextSize(13f);
+            txtHora.setPadding(16, 16, 16, 16);
+            txtHora.setBackgroundResource(R.drawable.celda_hora);
             fila.addView(txtHora);
 
-            // Agregar columnas por cada día
             for (String dia : dias) {
                 String key = bloque + "_" + dia;
-
                 TextView celda = new TextView(this);
-                celda.setPadding(8, 4, 8, 4);
-                celda.setTextSize(11f);
-                celda.setBackgroundColor(Color.LTGRAY);
+                celda.setTextSize(12f);
+                celda.setPadding(14, 12, 14, 12);
+                celda.setGravity(Gravity.CENTER_VERTICAL);
 
-                // Si hay una reserva, mostrar la información y cambiar el color
                 if (reservas.containsKey(key)) {
-                    String texto = reservas.get(key).get("info");
-                    celda.setText(texto);
-                    celda.setBackgroundColor(Color.parseColor("#FFF176")); // Amarillo
+                    celda.setText(reservas.get(key).get("info"));
+                    celda.setBackgroundResource(R.drawable.celda_ocupada);
                 } else {
-                    // Si está disponible, mostrar texto y color verde
                     celda.setText("Disponible");
-                    celda.setBackgroundColor(Color.parseColor("#C8E6C9")); // Verde claro
+                    celda.setBackgroundResource(R.drawable.celda_disponible);
                 }
 
                 fila.addView(celda);
@@ -130,13 +113,13 @@ public class CalendarioAdminActivity extends AppCompatActivity {
         }
     }
 
-    // Método para cargar reservas de equipos tecnológicos
     private void cargarReservasEquipos() {
         firestore.collection("reserva_equipo")
                 .get()
                 .addOnSuccessListener(query -> {
+                    tablaEquipos.removeAllViews(); // Limpiar antes de mostrar
                     for (var doc : query) {
-                        String equipo = doc.getString("tipo_equipo");
+                        String equipo = doc.getString("tipoEquipo");
                         String dia = doc.getString("dia");
                         String funcionario = doc.getString("funcionario");
                         String estado = doc.getString("estado");
@@ -144,7 +127,6 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                         TableRow fila = new TableRow(this);
                         fila.setPadding(4, 4, 4, 4);
 
-                        // Agregar celdas con los datos
                         fila.addView(crearCelda(equipo));
                         fila.addView(crearCelda(dia));
                         fila.addView(crearCelda(funcionario));
@@ -157,13 +139,12 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al cargar reservas de equipos", Toast.LENGTH_SHORT).show());
     }
 
-    // Método para crear una celda de texto reutilizable
     private TextView crearCelda(String texto) {
         TextView celda = new TextView(this);
         celda.setText(texto);
-        celda.setPadding(8, 4, 8, 4);
+        celda.setPadding(10, 8, 10, 8);
         celda.setTextSize(12f);
-        celda.setBackgroundColor(Color.WHITE);
+        celda.setBackgroundResource(R.drawable.celda_equipo);
         return celda;
     }
 }

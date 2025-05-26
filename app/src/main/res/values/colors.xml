@@ -13,4 +13,9 @@
     <color name="textColor">#FFFFFF</color>
     <color name="backgroundColor">#E9ECF7</color>
     <color name="buttonText">#1C2F8B</color>
-</resources>
+
+        <color name="disponibleColor">#A5D6A7</color> <!-- Verde claro -->
+        <color name="ocupadoColor">#FFEE58</color>     <!-- Amarillo -->
+    </resources>
+
+
