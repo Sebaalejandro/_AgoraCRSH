@@ -49,6 +49,9 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(query -> {
                     for (var doc : query) {
+                        Boolean expirada = doc.getBoolean("expirada");
+                        if (expirada != null && expirada) continue; // Ignorar reservas expiradas
+
                         String dia = doc.getString("dia");
                         String hora = doc.getString("hora");
                         String sala = doc.getString("sala");
@@ -60,9 +63,9 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                             String key = hora + "_" + dia;
                             String datos = "Curso: " + curso + "\nProf: " + funcionario + "\nEstado: " + estado;
 
-                            if (sala.equals("Sala 1")) {
+                            if (sala.equalsIgnoreCase("Sala 1")) {
                                 reservasSala1.computeIfAbsent(key, k -> new HashMap<>()).put("info", datos);
-                            } else if (sala.equals("Sala 2")) {
+                            } else if (sala.equalsIgnoreCase("Sala 2")) {
                                 reservasSala2.computeIfAbsent(key, k -> new HashMap<>()).put("info", datos);
                             }
                         }
@@ -84,8 +87,8 @@ public class CalendarioAdminActivity extends AppCompatActivity {
             TextView txtHora = new TextView(this);
             txtHora.setText(bloque);
             txtHora.setGravity(Gravity.CENTER);
-            txtHora.setTextSize(13f);
-            txtHora.setPadding(16, 16, 16, 16);
+            txtHora.setTextSize(14f);
+            txtHora.setPadding(20, 20, 20, 20);
             txtHora.setBackgroundResource(R.drawable.celda_hora);
             fila.addView(txtHora);
 
@@ -93,8 +96,8 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                 String key = bloque + "_" + dia;
                 TextView celda = new TextView(this);
                 celda.setTextSize(12f);
-                celda.setPadding(14, 12, 14, 12);
-                celda.setGravity(Gravity.CENTER_VERTICAL);
+                celda.setPadding(16, 14, 16, 14);
+                celda.setGravity(Gravity.CENTER);
 
                 if (reservas.containsKey(key)) {
                     celda.setText(reservas.get(key).get("info"));
@@ -118,6 +121,9 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                     tablaEquipos.removeAllViews();
 
                     for (var doc : query) {
+                        Boolean expirada = doc.getBoolean("expirada");
+                        if (expirada != null && expirada) continue; // Ignorar reservas expiradas
+
                         String equipo = doc.getString("tipoEquipo");
                         String dia = doc.getString("dia");
                         String funcionario = doc.getString("funcionario");
@@ -141,8 +147,9 @@ public class CalendarioAdminActivity extends AppCompatActivity {
     private TextView crearCelda(String texto) {
         TextView celda = new TextView(this);
         celda.setText(texto);
-        celda.setPadding(10, 8, 10, 8);
+        celda.setPadding(12, 10, 12, 10);
         celda.setTextSize(12f);
+        celda.setGravity(Gravity.CENTER_HORIZONTAL);
         celda.setBackgroundResource(R.drawable.celda_equipo);
         return celda;
     }

@@ -15,12 +15,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import com.google.firebase.firestore.DocumentReference;
 
 public class Sala2ReservaActivity extends AppCompatActivity {
 
@@ -66,7 +65,7 @@ public class Sala2ReservaActivity extends AppCompatActivity {
                         String sala = doc.getString("sala");
                         String estado = doc.getString("estado");
 
-                        if (dia != null && hora != null && sala != null && estado != null) {
+                        if (dia != null && hora != null && sala != null && estado != null && sala.equals("Sala 2")) {
                             Calendar calendario = Calendar.getInstance();
                             int diaSemanaHoy = calendario.get(Calendar.DAY_OF_WEEK);
                             String diaHoy = "";
@@ -90,6 +89,10 @@ public class Sala2ReservaActivity extends AppCompatActivity {
 
                                     if (horaActual.after(horaFinReserva)) {
                                         reservaActiva = false;
+
+                                        // Marcar como expirada en Firestore
+                                        DocumentReference docRef = doc.getReference();
+                                        docRef.update("expirada", true);
                                     }
                                 } catch (Exception e) {
                                     reservaActiva = true;
@@ -107,8 +110,7 @@ public class Sala2ReservaActivity extends AppCompatActivity {
 
                     cargarHorarioConBloqueo();
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al cargar reservas", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(this, "Error al cargar reservas", Toast.LENGTH_SHORT).show());
     }
 
     private void cargarHorarioConBloqueo() {
@@ -213,13 +215,13 @@ public class Sala2ReservaActivity extends AppCompatActivity {
         reserva.put("estado", "pendiente");
         reserva.put("tipo", "sala");
         reserva.put("funcionario", correo);
+        reserva.put("expirada", false);
 
         firestore.collection("reserva_salas")
                 .add(reserva)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(this, "Solicitud enviada para aprobación", Toast.LENGTH_SHORT).show();
 
-                    // Enviar notificación al admin
                     Map<String, Object> noti = new HashMap<>();
                     noti.put("titulo", "Nueva solicitud de sala");
                     noti.put("mensaje", curso + " solicitó la " + sala + " el " + dia + " a las " + hora);

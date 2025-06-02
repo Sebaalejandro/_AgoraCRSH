@@ -2,12 +2,7 @@ package com.example.agoracrsh;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -44,6 +39,9 @@ public class MisReservasActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(query -> {
                     for (DocumentSnapshot doc : query) {
+                        Boolean expirada = doc.getBoolean("expirada");
+                        if (expirada != null && expirada) continue; // Ignorar reservas expiradas
+
                         String id = doc.getId();
                         String dia = doc.getString("dia");
                         String hora = doc.getString("hora");

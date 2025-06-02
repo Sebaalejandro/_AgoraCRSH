@@ -56,6 +56,7 @@ public class SalaReservaActivity extends AppCompatActivity {
 
     private void cargarReservasDesdeFirestore() {
         firestore.collection("reserva_salas")
+                .whereEqualTo("expirada", false) // Ignorar las expiradas
                 .get()
                 .addOnSuccessListener(query -> {
                     for (var doc : query) {
@@ -87,6 +88,8 @@ public class SalaReservaActivity extends AppCompatActivity {
                                     Date horaFinReserva = sdf.parse(horaFin);
 
                                     if (horaActual.after(horaFinReserva)) {
+                                        // Marcar como expirada
+                                        doc.getReference().update("expirada", true);
                                         reservaActiva = false;
                                     }
                                 } catch (Exception e) {
@@ -211,6 +214,7 @@ public class SalaReservaActivity extends AppCompatActivity {
         reserva.put("estado", "pendiente");
         reserva.put("tipo", "sala");
         reserva.put("funcionario", correoUsuario);
+        reserva.put("expirada", false); // <-- Importante
 
         firestore.collection("reserva_salas")
                 .add(reserva)

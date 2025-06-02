@@ -21,12 +21,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class LoginActivity extends AppCompatActivity {
 
+    // Componentes de la interfaz
     private EditText emailEditText, passwordEditText;
     private Button loginButton;
     private TextView goToRegisterTextView, forgotPasswordTextView;
 
+    // Instancias de Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
 
@@ -36,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         setTitle("AgoraCRSH");
 
-        // Solicitar permiso de notificaciones si Android 13 o superior
+        // Solicitar permiso para notificaciones en Android 13 o superior
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -50,13 +55,14 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
+        // Vincular los elementos de la interfaz
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
         goToRegisterTextView = findViewById(R.id.goToRegisterTextView);
         forgotPasswordTextView = findViewById(R.id.forgotPasswordTextView);
 
-        // Si ya hay usuario autenticado, verificar si está aprobado
+        // Si el usuario ya está logueado, validar si está aprobado y redirigir
         if (mAuth.getCurrentUser() != null) {
             String uid = mAuth.getCurrentUser().getUid();
             firestore.collection("usuarios").document(uid).get()
@@ -66,18 +72,21 @@ public class LoginActivity extends AppCompatActivity {
                             String rol = documentSnapshot.getString("rol");
                             redirigirPorRol(rol);
                         } else {
-                            Toast.makeText(this, "Tu cuenta aún no ha sido aprobada por el administrador", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Tu cuenta aún no ha sido aprobada", Toast.LENGTH_SHORT).show();
                             mAuth.signOut();
                         }
                     });
         }
 
+        // Botón de login
         loginButton.setOnClickListener(v -> loginUser());
 
+        // Ir al registro
         goToRegisterTextView.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
+        // Recuperar contraseña
         forgotPasswordTextView.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             if (TextUtils.isEmpty(email)) {
@@ -92,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // Función para iniciar sesión
     private void loginUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
@@ -109,9 +119,8 @@ public class LoginActivity extends AppCompatActivity {
                                 if (documentSnapshot.exists()) {
                                     Boolean aprobado = documentSnapshot.getBoolean("aprobado");
                                     if (aprobado != null && aprobado) {
-                                        // Suscripción al topic general de notificaciones
+                                        // Suscribirse a notificaciones
                                         FirebaseMessaging.getInstance().subscribeToTopic("all");
-
                                         String rol = documentSnapshot.getString("rol");
                                         redirigirPorRol(rol);
                                     } else {
@@ -129,20 +138,28 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al iniciar sesión: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
+    // Redirige al usuario según su rol
     private void redirigirPorRol(String rol) {
-        if ("admin".equals(rol)) {
+        if (rol == null) {
+            Toast.makeText(this, "Rol no definido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        rol = rol.toLowerCase();
+        List<String> rolesPermitidos = Arrays.asList("docente", "paradocente", "coordinador", "inspector", "pie");
+
+        if (rol.equals("admin")) {
             startActivity(new Intent(this, AdminActivity.class));
-        } else if ("profesor".equals(rol)
-                || "para docentes".equals(rol)
-                || "director".equals(rol)
-                || "inspector".equals(rol)) {
+        } else if (rolesPermitidos.contains(rol)) {
             startActivity(new Intent(this, ProfesorActivity.class));
         } else {
             Toast.makeText(this, "Rol no válido", Toast.LENGTH_SHORT).show();
         }
+
         finish();
     }
 
+    // Resultado de solicitud de permisos
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {

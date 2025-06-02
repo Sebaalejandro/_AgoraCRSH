@@ -5,8 +5,9 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.*;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class EquipoReservaActivity extends AppCompatActivity {
@@ -42,6 +43,8 @@ public class EquipoReservaActivity extends AppCompatActivity {
         spinnerBloque.setSelection(0, false);
 
         btnEnviar.setOnClickListener(v -> enviarSolicitud());
+
+        marcarReservasExpiradas(); // NUEVO: revisar y marcar expiradas
     }
 
     private void enviarSolicitud() {
@@ -74,7 +77,8 @@ public class EquipoReservaActivity extends AppCompatActivity {
         solicitud.put("bloque", bloque);
         solicitud.put("curso", curso);
         solicitud.put("estado", "pendiente");
-        solicitud.put("funcionario", correo); // NUEVO
+        solicitud.put("funcionario", correo);
+        solicitud.put("expirada", false); // NUEVO
 
         FirebaseFirestore.getInstance().collection("reserva_equipo")
                 .add(solicitud)
@@ -103,5 +107,38 @@ public class EquipoReservaActivity extends AppCompatActivity {
         int diaHoy = hoy.get(Calendar.DAY_OF_WEEK);
         int diaSeleccionadoIndex = diasSemana.indexOf(diaSeleccionado);
         return diaSeleccionadoIndex != -1 && (diaSeleccionadoIndex + 2) >= diaHoy && diaSeleccionadoIndex <= 4;
+    }
+
+    // NUEVO: marcar reservas expiradas si ya pasó la hora del bloque
+    private void marcarReservasExpiradas() {
+        FirebaseFirestore.getInstance().collection("reserva_equipo")
+                .whereEqualTo("expirada", false)
+                .get()
+                .addOnSuccessListener(query -> {
+                    for (DocumentSnapshot doc : query) {
+                        String dia = doc.getString("dia");
+                        String bloque = doc.getString("bloque");
+
+                        if (dia == null || bloque == null) continue;
+
+                        Calendar calendario = Calendar.getInstance();
+                        int diaHoy = calendario.get(Calendar.DAY_OF_WEEK);
+                        String diaActual = diasSemana.get(diaHoy - 2); // Lunes = index 0
+
+                        if (dia.equals(diaActual)) {
+                            try {
+                                String[] partesHora = bloque.split("-");
+                                String horaFin = partesHora[1].trim();
+                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                                Date horaActual = sdf.parse(sdf.format(new Date()));
+                                Date horaFinReserva = sdf.parse(horaFin);
+
+                                if (horaActual.after(horaFinReserva)) {
+                                    doc.getReference().update("expirada", true);
+                                }
+                            } catch (Exception ignored) {}
+                        }
+                    }
+                });
     }
 }
