@@ -42,6 +42,20 @@ public class SalaReservaActivity extends AppCompatActivity {
 
     private final Map<String, Map<String, String>> reservasExistentes = new HashMap<>();
 
+    private final Set<String> reservasTICFijas = new HashSet<>(Arrays.asList(
+            // Lunes
+            "08:00 - 09:30_Lunes", "09:45 - 11:15_Lunes",
+            "13:55 - 15:25_Lunes", "15:35 - 17:05_Lunes",
+            // Martes
+            "09:45 - 11:15_Martes",
+            // Miércoles
+            "08:00 - 09:30_Miércoles", "11:25 - 12:55_Miércoles", "13:55 - 15:25_Miércoles",
+            // Jueves
+            "11:25 - 12:55_Jueves", "13:55 - 15:25_Jueves", "15:35 - 17:05_Jueves",
+            // Viernes
+            "08:00 - 09:30_Viernes", "09:45 - 11:15_Viernes", "11:25 - 12:55_Viernes"
+    ));
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +70,7 @@ public class SalaReservaActivity extends AppCompatActivity {
 
     private void cargarReservasDesdeFirestore() {
         firestore.collection("reserva_salas")
-                .whereEqualTo("expirada", false) // Ignorar las expiradas
+                .whereEqualTo("expirada", false)
                 .get()
                 .addOnSuccessListener(query -> {
                     for (var doc : query) {
@@ -88,7 +102,6 @@ public class SalaReservaActivity extends AppCompatActivity {
                                     Date horaFinReserva = sdf.parse(horaFin);
 
                                     if (horaActual.after(horaFinReserva)) {
-                                        // Marcar como expirada
                                         doc.getReference().update("expirada", true);
                                         reservaActiva = false;
                                     }
@@ -133,9 +146,14 @@ public class SalaReservaActivity extends AppCompatActivity {
                 String key = bloque + "_" + diaCompleto;
                 String sala = "Sala 1";
 
-                String estado = reservasExistentes.containsKey(key) ?
-                        reservasExistentes.get(key).getOrDefault(sala, "disponible") :
-                        "disponible";
+                String estado;
+                if (reservasTICFijas.contains(key)) {
+                    estado = "ocupado";
+                } else {
+                    estado = reservasExistentes.containsKey(key)
+                            ? reservasExistentes.get(key).getOrDefault(sala, "disponible")
+                            : "disponible";
+                }
 
                 configurarBoton(btn, estado, diaCompleto, bloque, sala);
                 fila.addView(btn);
@@ -149,27 +167,37 @@ public class SalaReservaActivity extends AppCompatActivity {
     }
 
     private void configurarBoton(Button btn, String estado, String dia, String hora, String sala) {
+        String key = hora + "_" + dia;
+        if (reservasTICFijas.contains(key)) {
+            btn.setText("TIC");
+            btn.setEnabled(false);
+            btn.setBackgroundColor(Color.parseColor("#90CAF9")); // Azul claro
+            btn.setTextColor(Color.BLACK);
+            return;
+        }
+
         switch (estado) {
             case "ocupado":
                 btn.setText("Ocupado");
                 btn.setEnabled(false);
-                btn.setBackgroundColor(Color.parseColor("#EF9A9A"));
+                btn.setBackgroundColor(Color.parseColor("#EF9A9A")); // Rojo claro
                 btn.setTextColor(Color.WHITE);
                 break;
             case "pendiente":
                 btn.setText("Pendiente");
                 btn.setEnabled(false);
-                btn.setBackgroundColor(Color.parseColor("#FFCC80"));
+                btn.setBackgroundColor(Color.parseColor("#FFCC80")); // Naranjo claro
                 btn.setTextColor(Color.BLACK);
                 break;
             default:
                 btn.setText("Reservar");
                 btn.setEnabled(true);
-                btn.setBackgroundColor(Color.parseColor("#A5D6A7"));
+                btn.setBackgroundColor(Color.parseColor("#A5D6A7")); // Verde claro
                 btn.setTextColor(Color.BLACK);
                 btn.setOnClickListener(v -> mostrarFormularioReserva(dia, hora, sala));
         }
     }
+
 
     private void mostrarFormularioReserva(String dia, String hora, String sala) {
         final EditText inputCurso = new EditText(this);
@@ -214,14 +242,13 @@ public class SalaReservaActivity extends AppCompatActivity {
         reserva.put("estado", "pendiente");
         reserva.put("tipo", "sala");
         reserva.put("funcionario", correoUsuario);
-        reserva.put("expirada", false); // <-- Importante
+        reserva.put("expirada", false);
 
         firestore.collection("reserva_salas")
                 .add(reserva)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(this, "Solicitud enviada para aprobación", Toast.LENGTH_SHORT).show();
 
-                    // Notificación para el administrador
                     Map<String, Object> notificacion = new HashMap<>();
                     notificacion.put("titulo", "Nueva reserva de sala");
                     notificacion.put("mensaje", "El usuario " + correoUsuario + " solicitó la sala " + sala +
