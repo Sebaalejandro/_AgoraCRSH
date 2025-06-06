@@ -32,12 +32,20 @@ public class CalendarioAdminActivity extends AppCompatActivity {
 
     // Solo aplica a SALA 1
     private final Set<String> reservasTICFijas = new HashSet<>(Arrays.asList(
-            "08:00 - 09:30_Lunes", "09:45 - 11:15_Lunes", "13:55 - 15:25_Lunes", "15:35 - 17:05_Lunes",
+            // Lunes
+            "08:00 - 09:30_Lunes", "09:45 - 11:15_Lunes",
+            "13:55 - 15:25_Lunes", "15:35 - 17:05_Lunes",
+            // Martes
             "09:45 - 11:15_Martes",
+            // Miércoles
             "08:00 - 09:30_Miércoles", "11:25 - 12:55_Miércoles", "13:55 - 15:25_Miércoles",
+            // Jueves
             "11:25 - 12:55_Jueves", "13:55 - 15:25_Jueves", "15:35 - 17:05_Jueves",
+            // Viernes
             "08:00 - 09:30_Viernes", "09:45 - 11:15_Viernes", "11:25 - 12:55_Viernes"
     ));
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
