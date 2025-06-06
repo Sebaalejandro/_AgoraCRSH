@@ -3,41 +3,39 @@
     android:id="@+id/scrollViewAdmin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@color/backgroundColor">
+    android:padding="8dp"
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:orientation="vertical">
 
-        <!-- Título Sala 1 -->
+        <!-- TÍTULO SALA 1 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reservas Sala Enlace 1"
-            android:textSize="22sp"
-            android:textColor="@color/primaryColor"
+            android:text="Reservas Lab. Enlace 1"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
+            android:textColor="#188F97"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp" />
 
-        <!-- Encabezado de días -->
+        <!-- ENCABEZADO DÍAS -->
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="*">
+            android:stretchColumns="*"
+            android:background="#E0F2F1"
+            android:padding="4dp">
             <TableRow>
-                <TextView
-                    android:text="Hora"
-                    android:textStyle="bold"
-                    android:padding="8dp"
-                    android:textColor="@color/primaryColor"/>
-                <TextView android:text="Lunes" android:padding="8dp"/>
-                <TextView android:text="Martes" android:padding="8dp"/>
-                <TextView android:text="Miércoles" android:padding="8dp"/>
-                <TextView android:text="Jueves" android:padding="8dp"/>
-                <TextView android:text="Viernes" android:padding="8dp"/>
+                <TextView android:text="Hora" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
+                <TextView android:text="Lunes" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
+                <TextView android:text="Martes" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
+                <TextView android:text="Miércoles" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
+                <TextView android:text="Jueves" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
+                <TextView android:text="Viernes" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
             </TableRow>
         </TableLayout>
 
@@ -46,37 +44,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stretchColumns="*"
-            android:background="@android:color/white"
-            android:elevation="2dp"
-            android:padding="8dp" />
+            android:background="#F5F5F5"
+            android:padding="4dp" />
 
-        <!-- Título Sala 2 -->
+        <!-- TÍTULO SALA 2 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reservas Sala Enlace 2"
-            android:textSize="22sp"
-            android:textColor="@color/primaryColor"
+            android:text="Reservas Lab. Enlace 2"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:textColor="#188F97"
+            android:layout_gravity="center"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="16dp" />
 
-        <!-- Encabezado de días -->
+        <!-- ENCABEZADO DÍAS -->
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="*">
+            android:stretchColumns="*"
+            android:background="#E0F2F1"
+            android:padding="4dp">
             <TableRow>
-                <TextView
-                    android:text="Hora"
-                    android:textStyle="bold"
-                    android:padding="8dp"
-                    android:textColor="@color/primaryColor"/>
-                <TextView android:text="Lunes" android:padding="8dp"/>
-                <TextView android:text="Martes" android:padding="8dp"/>
-                <TextView android:text="Miércoles" android:padding="8dp"/>
-                <TextView android:text="Jueves" android:padding="8dp"/>
-                <TextView android:text="Viernes" android:padding="8dp"/>
+                <TextView android:text="Hora" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
+                <TextView android:text="Lunes" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
+                <TextView android:text="Martes" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
+                <TextView android:text="Miércoles" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
+                <TextView android:text="Jueves" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
+                <TextView android:text="Viernes" android:textStyle="bold" android:padding="8dp" android:gravity="center"/>
             </TableRow>
         </TableLayout>
 
@@ -85,28 +81,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stretchColumns="*"
-            android:background="@android:color/white"
-            android:elevation="2dp"
-            android:padding="8dp" />
+            android:background="#F5F5F5"
+            android:padding="4dp" />
 
-        <!-- Título Equipos -->
+        <!-- TÍTULO EQUIPOS -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Reservas de Equipos Tecnológicos"
-            android:textSize="22sp"
-            android:textColor="@color/primaryColor"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:textColor="#188F97"
+            android:layout_gravity="center"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="16dp" />
 
         <TableLayout
             android:id="@+id/tablaEquipos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stretchColumns="*"
-            android:background="@android:color/white"
-            android:elevation="2dp"
-            android:padding="8dp" />
+            android:background="#F5F5F5"
+            android:padding="4dp" />
     </LinearLayout>
 </ScrollView>

@@ -2,33 +2,42 @@ package com.example.agoracrsh;
 
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.graphics.Color;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CalendarioAdminActivity extends AppCompatActivity {
 
     private TableLayout tablaSala1, tablaSala2, tablaEquipos;
     private FirebaseFirestore firestore;
 
-    private final List<String> bloques = List.of(
+    private final List<String> bloques = Arrays.asList(
             "08:00 - 09:30", "09:45 - 11:15", "11:25 - 12:55",
             "13:55 - 15:25", "15:35 - 17:05"
     );
 
-    private final List<String> dias = List.of("Lunes", "Martes", "Miércoles", "Jueves", "Viernes");
+    private final List<String> dias = Arrays.asList("Lunes", "Martes", "Miércoles", "Jueves", "Viernes");
 
     private final Map<String, Map<String, String>> reservasSala1 = new HashMap<>();
     private final Map<String, Map<String, String>> reservasSala2 = new HashMap<>();
+
+    // Solo aplica a SALA 1
+    private final Set<String> reservasTICFijas = new HashSet<>(Arrays.asList(
+            "08:00 - 09:30_Lunes", "09:45 - 11:15_Lunes", "13:55 - 15:25_Lunes", "15:35 - 17:05_Lunes",
+            "09:45 - 11:15_Martes",
+            "08:00 - 09:30_Miércoles", "11:25 - 12:55_Miércoles", "13:55 - 15:25_Miércoles",
+            "11:25 - 12:55_Jueves", "13:55 - 15:25_Jueves", "15:35 - 17:05_Jueves",
+            "08:00 - 09:30_Viernes", "09:45 - 11:15_Viernes", "11:25 - 12:55_Viernes"
+    ));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +59,7 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                 .addOnSuccessListener(query -> {
                     for (var doc : query) {
                         Boolean expirada = doc.getBoolean("expirada");
-                        if (expirada != null && expirada) continue; // Ignorar reservas expiradas
+                        if (expirada != null && expirada) continue;
 
                         String dia = doc.getString("dia");
                         String hora = doc.getString("hora");
@@ -61,7 +70,9 @@ public class CalendarioAdminActivity extends AppCompatActivity {
 
                         if (dia != null && hora != null && sala != null) {
                             String key = hora + "_" + dia;
-                            String datos = "Curso: " + curso + "\nProf: " + funcionario + "\nEstado: " + estado;
+                            String datos = estado != null && estado.equals("pendiente")
+                                    ? "Pendiente"
+                                    : "Curso: " + curso + "\nProf: " + funcionario;
 
                             if (sala.equalsIgnoreCase("Sala 1")) {
                                 reservasSala1.computeIfAbsent(key, k -> new HashMap<>()).put("info", datos);
@@ -71,14 +82,12 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                         }
                     }
 
-                    mostrarTablaSalas(tablaSala1, reservasSala1);
-                    mostrarTablaSalas(tablaSala2, reservasSala2);
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al cargar reservas de salas", Toast.LENGTH_SHORT).show());
+                    mostrarTabla(tablaSala1, reservasSala1, true);   // TRUE = incluir TIC
+                    mostrarTabla(tablaSala2, reservasSala2, false);  // FALSE = sin TIC
+                });
     }
 
-    private void mostrarTablaSalas(TableLayout tabla, Map<String, Map<String, String>> reservas) {
+    private void mostrarTabla(TableLayout tabla, Map<String, Map<String, String>> reservas, boolean esSala1) {
         tabla.removeAllViews();
 
         for (String bloque : bloques) {
@@ -89,22 +98,40 @@ public class CalendarioAdminActivity extends AppCompatActivity {
             txtHora.setGravity(Gravity.CENTER);
             txtHora.setTextSize(14f);
             txtHora.setPadding(20, 20, 20, 20);
-            txtHora.setBackgroundResource(R.drawable.celda_hora);
+            txtHora.setBackgroundColor(ContextCompat.getColor(this, android.R.color.darker_gray));
+            txtHora.setTextColor(ContextCompat.getColor(this, android.R.color.white));
             fila.addView(txtHora);
 
             for (String dia : dias) {
                 String key = bloque + "_" + dia;
                 TextView celda = new TextView(this);
-                celda.setTextSize(12f);
-                celda.setPadding(16, 14, 16, 14);
                 celda.setGravity(Gravity.CENTER);
+                celda.setPadding(12, 10, 12, 10);
+                celda.setTextSize(11f);
+                celda.setLayoutParams(new TableRow.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                ));
 
-                if (reservas.containsKey(key)) {
-                    celda.setText(reservas.get(key).get("info"));
-                    celda.setBackgroundResource(R.drawable.celda_ocupada);
+                if (esSala1 && reservasTICFijas.contains(key)) {
+                    celda.setText("TIC");
+                    celda.setBackgroundColor(Color.parseColor("#90CAF9")); // Azul
+                    celda.setTextColor(Color.BLACK);
+                } else if (reservas.containsKey(key)) {
+                    String info = reservas.get(key).get("info");
+                    if (info != null && info.equals("Pendiente")) {
+                        celda.setText("Pendiente");
+                        celda.setBackgroundColor(Color.parseColor("#FFCC80")); // Naranjo
+                        celda.setTextColor(Color.BLACK);
+                    } else {
+                        celda.setText(info);
+                        celda.setBackgroundColor(Color.parseColor("#EF9A9A")); // Rojo
+                        celda.setTextColor(Color.WHITE);
+                    }
                 } else {
                     celda.setText("Disponible");
-                    celda.setBackgroundResource(R.drawable.celda_disponible);
+                    celda.setBackgroundColor(Color.parseColor("#A5D6A7")); // Verde
+                    celda.setTextColor(Color.BLACK);
                 }
 
                 fila.addView(celda);
@@ -122,7 +149,7 @@ public class CalendarioAdminActivity extends AppCompatActivity {
 
                     for (var doc : query) {
                         Boolean expirada = doc.getBoolean("expirada");
-                        if (expirada != null && expirada) continue; // Ignorar reservas expiradas
+                        if (expirada != null && expirada) continue;
 
                         String equipo = doc.getString("tipoEquipo");
                         String dia = doc.getString("dia");
@@ -132,25 +159,23 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                         TableRow fila = new TableRow(this);
                         fila.setPadding(4, 4, 4, 4);
 
-                        fila.addView(crearCelda(equipo));
-                        fila.addView(crearCelda(dia));
-                        fila.addView(crearCelda(funcionario));
-                        fila.addView(crearCelda(estado));
+                        fila.addView(crearCeldaEquipo(equipo));
+                        fila.addView(crearCeldaEquipo(dia));
+                        fila.addView(crearCeldaEquipo(funcionario));
+                        fila.addView(crearCeldaEquipo(estado));
 
                         tablaEquipos.addView(fila);
                     }
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al cargar reservas de equipos", Toast.LENGTH_SHORT).show());
+                });
     }
 
-    private TextView crearCelda(String texto) {
+    private TextView crearCeldaEquipo(String texto) {
         TextView celda = new TextView(this);
         celda.setText(texto);
         celda.setPadding(12, 10, 12, 10);
         celda.setTextSize(12f);
-        celda.setGravity(Gravity.CENTER_HORIZONTAL);
-        celda.setBackgroundResource(R.drawable.celda_equipo);
+        celda.setGravity(Gravity.CENTER);
+        celda.setBackgroundColor(Color.LTGRAY);
         return celda;
     }
 }
