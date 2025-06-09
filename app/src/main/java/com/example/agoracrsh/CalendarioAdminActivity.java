@@ -9,7 +9,6 @@ import android.widget.TextView;
 import android.graphics.Color;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -25,27 +24,21 @@ public class CalendarioAdminActivity extends AppCompatActivity {
             "13:55 - 15:25", "15:35 - 17:05"
     );
 
+    // Días completos para las claves
     private final List<String> dias = Arrays.asList("Lunes", "Martes", "Miércoles", "Jueves", "Viernes");
+    // Días abreviados para el encabezado
+    private final List<String> diasAbreviados = Arrays.asList("L", "M", "Mi", "J", "V");
 
     private final Map<String, Map<String, String>> reservasSala1 = new HashMap<>();
     private final Map<String, Map<String, String>> reservasSala2 = new HashMap<>();
 
-    // Solo aplica a SALA 1
     private final Set<String> reservasTICFijas = new HashSet<>(Arrays.asList(
-            // Lunes
-            "08:00 - 09:30_Lunes", "09:45 - 11:15_Lunes",
-            "13:55 - 15:25_Lunes", "15:35 - 17:05_Lunes",
-            // Martes
+            "08:00 - 09:30_Lunes", "09:45 - 11:15_Lunes", "13:55 - 15:25_Lunes", "15:35 - 17:05_Lunes",
             "09:45 - 11:15_Martes",
-            // Miércoles
             "08:00 - 09:30_Miércoles", "11:25 - 12:55_Miércoles", "13:55 - 15:25_Miércoles",
-            // Jueves
             "11:25 - 12:55_Jueves", "13:55 - 15:25_Jueves", "15:35 - 17:05_Jueves",
-            // Viernes
             "08:00 - 09:30_Viernes", "09:45 - 11:15_Viernes", "11:25 - 12:55_Viernes"
     ));
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,55 +83,53 @@ public class CalendarioAdminActivity extends AppCompatActivity {
                         }
                     }
 
-                    mostrarTabla(tablaSala1, reservasSala1, true);   // TRUE = incluir TIC
-                    mostrarTabla(tablaSala2, reservasSala2, false);  // FALSE = sin TIC
+                    mostrarTabla(tablaSala1, reservasSala1, true);
+                    mostrarTabla(tablaSala2, reservasSala2, false);
                 });
     }
 
     private void mostrarTabla(TableLayout tabla, Map<String, Map<String, String>> reservas, boolean esSala1) {
         tabla.removeAllViews();
 
+        // Encabezado
+        TableRow encabezado = new TableRow(this);
+        agregarCelda(encabezado, "Hora", true);
+        for (String diaAbreviado : diasAbreviados) {
+            agregarCelda(encabezado, diaAbreviado, true);
+        }
+        tabla.addView(encabezado);
+
+        // Filas
         for (String bloque : bloques) {
             TableRow fila = new TableRow(this);
+            agregarCelda(fila, bloque, true);
 
-            TextView txtHora = new TextView(this);
-            txtHora.setText(bloque);
-            txtHora.setGravity(Gravity.CENTER);
-            txtHora.setTextSize(14f);
-            txtHora.setPadding(20, 20, 20, 20);
-            txtHora.setBackgroundColor(ContextCompat.getColor(this, android.R.color.darker_gray));
-            txtHora.setTextColor(ContextCompat.getColor(this, android.R.color.white));
-            fila.addView(txtHora);
-
-            for (String dia : dias) {
+            for (int i = 0; i < dias.size(); i++) {
+                String dia = dias.get(i);
                 String key = bloque + "_" + dia;
                 TextView celda = new TextView(this);
                 celda.setGravity(Gravity.CENTER);
                 celda.setPadding(12, 10, 12, 10);
                 celda.setTextSize(11f);
-                celda.setLayoutParams(new TableRow.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                ));
 
                 if (esSala1 && reservasTICFijas.contains(key)) {
                     celda.setText("TIC");
-                    celda.setBackgroundColor(Color.parseColor("#90CAF9")); // Azul
+                    celda.setBackgroundColor(Color.parseColor("#90CAF9"));
                     celda.setTextColor(Color.BLACK);
                 } else if (reservas.containsKey(key)) {
                     String info = reservas.get(key).get("info");
-                    if (info != null && info.equals("Pendiente")) {
+                    if ("Pendiente".equals(info)) {
                         celda.setText("Pendiente");
-                        celda.setBackgroundColor(Color.parseColor("#FFCC80")); // Naranjo
+                        celda.setBackgroundColor(Color.parseColor("#FFCC80"));
                         celda.setTextColor(Color.BLACK);
                     } else {
                         celda.setText(info);
-                        celda.setBackgroundColor(Color.parseColor("#EF9A9A")); // Rojo
+                        celda.setBackgroundColor(Color.parseColor("#EF9A9A"));
                         celda.setTextColor(Color.WHITE);
                     }
                 } else {
                     celda.setText("Disponible");
-                    celda.setBackgroundColor(Color.parseColor("#A5D6A7")); // Verde
+                    celda.setBackgroundColor(Color.parseColor("#A5D6A7"));
                     celda.setTextColor(Color.BLACK);
                 }
 
@@ -147,6 +138,17 @@ public class CalendarioAdminActivity extends AppCompatActivity {
 
             tabla.addView(fila);
         }
+    }
+
+    private void agregarCelda(TableRow fila, String texto, boolean esEncabezado) {
+        TextView celda = new TextView(this);
+        celda.setText(texto);
+        celda.setGravity(Gravity.CENTER);
+        celda.setPadding(12, 10, 12, 10);
+        celda.setTextSize(esEncabezado ? 13f : 11f);
+        celda.setTextColor(Color.BLACK);
+        celda.setBackgroundColor(esEncabezado ? Color.parseColor("#C8E6C9") : Color.WHITE);
+        fila.addView(celda);
     }
 
     private void cargarReservasEquipos() {
